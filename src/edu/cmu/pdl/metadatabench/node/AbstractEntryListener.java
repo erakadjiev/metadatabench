@@ -7,11 +7,11 @@ import java.util.concurrent.Executors;
 public abstract class AbstractEntryListener {
 
 	protected ExecutorService threadPool;
-	protected HDFSClient hdfsClient;
+	protected IOperationExecutor operationExecutor;
 	
 	public AbstractEntryListener(int creatorThreads){
 		threadPool = Executors.newFixedThreadPool(creatorThreads);
-		hdfsClient = new HDFSClient();
+		operationExecutor = new HDFSOperationExecutor();
 	}
 	
 }
