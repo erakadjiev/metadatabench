@@ -7,19 +7,19 @@ public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStr
 	private Random randomId;
 	private Random randomParent;
 
-	public BarabasiAlbertCreationStrategy(){
-		this("");
+	public BarabasiAlbertCreationStrategy(INamespaceMapEntryDAO dao){
+		this(dao, "");
 	}
 	
-	public BarabasiAlbertCreationStrategy(String workingDirectory){
-		super(workingDirectory);
+	public BarabasiAlbertCreationStrategy(INamespaceMapEntryDAO dao, String workingDirectory){
+		super(dao, workingDirectory);
 		randomId = new Random();
 		randomParent = new Random();
 	}
 	
 	public String selectDirectory(){
 		int id = randomId.nextInt(numberOfDirs-1) + 2;
-		String dirPath = dirMap.get(id);
+		String dirPath = dao.getDir(id);
 		boolean parent = randomParent.nextBoolean();
 		if(parent){
 			int slashIdx = dirPath.lastIndexOf(PATH_SEPARATOR);

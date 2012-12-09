@@ -1,8 +1,5 @@
 package edu.cmu.pdl.metadatabench.generator;
 
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 
 public abstract class AbstractDirectoryCreationStrategy {
 
@@ -11,16 +8,15 @@ public abstract class AbstractDirectoryCreationStrategy {
 	
 	private String workingDirectory;
 	protected int numberOfDirs;
-	protected IMap<Integer,String> dirMap;
+	protected INamespaceMapEntryDAO dao;
 	
-	public AbstractDirectoryCreationStrategy(String workingDirectory){
+	public AbstractDirectoryCreationStrategy(INamespaceMapEntryDAO dao, String workingDirectory){
 		this.workingDirectory = workingDirectory;
 		while(this.workingDirectory.endsWith("/")){
 			this.workingDirectory = this.workingDirectory.substring(0, this.workingDirectory.length() - 1);
 		}
 		numberOfDirs = 0;
-		HazelcastInstance hci = Hazelcast.newHazelcastInstance(null); 
-		dirMap = hci.getMap("directories");
+		this.dao = dao;
 	}
 	
 	abstract public String selectDirectory();
@@ -29,22 +25,22 @@ public abstract class AbstractDirectoryCreationStrategy {
 		String parentPath = selectDirectory();
 		numberOfDirs++;
 		String name = parentPath + DIR_NAME_PREFIX + numberOfDirs;
-		dirMap.put(numberOfDirs, name);
+		dao.createDir(numberOfDirs, name);
 	}
 	
 	public void createRoot(){
 		numberOfDirs++;
 		String rootPath = workingDirectory + DIR_NAME_PREFIX + numberOfDirs;
-		dirMap.put(numberOfDirs, rootPath);
+		dao.createDir(numberOfDirs, rootPath);
 		numberOfDirs++;
 		String firstDirPath = rootPath + DIR_NAME_PREFIX + numberOfDirs;
-		dirMap.put(numberOfDirs, firstDirPath);
+		dao.createDir(numberOfDirs, firstDirPath);
 	}
 	
 	public void testPrint(){
-		System.out.println(dirMap.size());
-		System.out.println(dirMap.get(1));
-		System.out.println(dirMap.get(dirMap.size()/2));
+		System.out.println(dao.getNumberOfDirs());
+		System.out.println(dao.getDir(1));
+		System.out.println(dao.getDir(dao.getNumberOfDirs()/2));
 	}
 	
 }
