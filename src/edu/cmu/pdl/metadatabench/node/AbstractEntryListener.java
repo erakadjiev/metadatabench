@@ -1,17 +1,11 @@
 package edu.cmu.pdl.metadatabench.node;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-
 public abstract class AbstractEntryListener {
 
-	protected ExecutorService threadPool;
-	protected IOperationExecutor operationExecutor;
+	protected OperationExecutor executor;
 	
-	public AbstractEntryListener(int creatorThreads){
-		threadPool = Executors.newFixedThreadPool(creatorThreads);
-		operationExecutor = new HDFSOperationExecutor();
+	public AbstractEntryListener(OperationExecutor executor){
+		this.executor = executor;
 	}
 	
 }

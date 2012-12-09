@@ -1,27 +1,28 @@
 package edu.cmu.pdl.metadatabench.node;
 
-import java.util.Set;
-
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
 public class StorageNode{
 
-	private static int creatorThreads = 100; // TODO: param
+	private static final int THREADS = 100; // TODO: param
+	private static final OperationExecutor executor = new OperationExecutor(new HDFSClient(), THREADS);
+	
+	private StorageNode(){};
 	
 	public static void main(String[] args) {
-		HazelcastInstance hci = null;
-		Set<HazelcastInstance> instances = Hazelcast.getAllHazelcastInstances();
-		if(instances.size() == 1){
-			for (HazelcastInstance instance : instances){
-				hci = instance;
-			}
-		} else {
-			System.err.println("Less or more than 1 Hazelcast instances available");
-		}
-		IMap<Integer,String> dirMap = hci.getMap("directories");
-		dirMap.addLocalEntryListener(new DirectoryEntryListener(creatorThreads));
+		HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance(null);
+		
+		IMap<Integer,String> dirMap = hazelcast.getMap("directories");
+		dirMap.addLocalEntryListener(new DirectoryAndFileEntryListener(executor));
+
+		IMap<Integer,String> fileMap = hazelcast.getMap("files");
+		fileMap.addLocalEntryListener(new DirectoryAndFileEntryListener(executor));
+	}
+	
+	public static OperationExecutor getOperationExecutor(){
+		return executor;
 	}
 
 }
