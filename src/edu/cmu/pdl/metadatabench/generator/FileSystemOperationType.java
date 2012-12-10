@@ -2,11 +2,12 @@ package edu.cmu.pdl.metadatabench.generator;
 
 public enum FileSystemOperationType {
 	CREATE ("create"),
-	DELETE ("delete"),
-	LIST_STATUS ("listStatus"),
 	MKDIRS ("mkdirs"),
-	OPEN ("open"),
-	RENAME ("rename");
+	DELETE_FILE ("deleteFile"),
+	LIST_STATUS_FILE ("listStatusFile"),
+	LIST_STATUS_DIR ("listStatusDir"),
+	OPEN_FILE ("openFile"),
+	RENAME_FILE ("renameFile");
 	
 	private final String name;
 	

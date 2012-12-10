@@ -25,7 +25,7 @@ public class NamespaceGenerator {
 	
 	public static void main(String[] args){
 		long start = System.currentTimeMillis();
-		INamespaceMapEntryDAO dao = new HazelcastMapEntryDAO();
+		INamespaceMapDAO dao = new HazelcastMapDAO();
 		AbstractDirectoryCreationStrategy dirCreator = new BarabasiAlbertCreationStrategy(dao, "/workDir");
 		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dao);
 		NamespaceGenerator gen = new NamespaceGenerator(dirCreator, fileCreator);

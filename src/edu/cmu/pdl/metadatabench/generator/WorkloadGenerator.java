@@ -13,18 +13,18 @@ public class WorkloadGenerator {
 	public static final Map<FileSystemOperationType,Double> OPERATION_PROBABILITIES = new HashMap<FileSystemOperationType,Double>();
 	static{
 		OPERATION_PROBABILITIES.put(FileSystemOperationType.CREATE, 0.2);
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.LIST_STATUS, 0.4);
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.OPEN, 0.4);
+		OPERATION_PROBABILITIES.put(FileSystemOperationType.LIST_STATUS_DIR, 0.4);
+		OPERATION_PROBABILITIES.put(FileSystemOperationType.OPEN_FILE, 0.4);
 	}
 	
 	private long numberOfDirs;
 	private long numberOfFiles;
-	private INamespaceMapEntryDAO dao;
+	private INamespaceMapDAO dao;
 	private IOperationDispatcher dispatcher;
 	private OperationTypeSelector operationTypeSelector;
 	private DirectoryAndFileSelector randomSelector;
 	
-	public WorkloadGenerator(INamespaceMapEntryDAO dao, long numberOfDirs, long numberOfFiles){
+	public WorkloadGenerator(INamespaceMapDAO dao, long numberOfDirs, long numberOfFiles){
 		this.numberOfDirs = numberOfDirs;
 		this.numberOfFiles = numberOfFiles;
 		this.dao = dao;
@@ -37,24 +37,27 @@ public class WorkloadGenerator {
 		for(int i=0; i<NUM_OPS; i++){
 			FileSystemOperationType operation = operationTypeSelector.getRandomOperationType();
 			switch(operation){
-			case CREATE:
-				create();
-				break;
-			case DELETE:
-				delete();
-				break;
-			case LIST_STATUS:
-				listStatus();
-				break;
-			case MKDIRS:
-				mkdir();
-				break;
-			case OPEN:
-				open();
-				break;
-			case RENAME:
-				rename();
-				break;
+				case CREATE:
+					create();
+					break;
+				case MKDIRS:
+					mkdir();
+					break;
+				case DELETE_FILE:
+					deleteFile();
+					break;
+				case LIST_STATUS_FILE:
+					listStatusFile();
+					break;
+				case LIST_STATUS_DIR:
+					listStatusDir();
+					break;
+				case OPEN_FILE:
+					openFile();
+					break;
+				case RENAME_FILE:
+					renameFile();
+					break;
 			}
 		}
 	}
@@ -66,19 +69,7 @@ public class WorkloadGenerator {
 		String path = parentPath + FILE_NAME_PREFIX + numberOfFiles;
 		dao.createFile(numberOfFiles, path);
 	}
-
-	private void delete() {
-		long id = randomSelector.getRandomFile(numberOfFiles);
-		dao.deleteFile(id);
-		// TODO: track deleted files
-	}
-
-	private void listStatus() {
-		long id = randomSelector.getRandomDirectory(numberOfDirs);
-		SimpleOperation op = new SimpleOperation(FileSystemOperationType.LIST_STATUS, id);
-		dispatcher.dispatch(op);
-	}
-
+	
 	private void mkdir() {
 		long parentId = randomSelector.getRandomDirectory(numberOfDirs);
 		String parentPath = dao.getDir(parentId);
@@ -87,14 +78,32 @@ public class WorkloadGenerator {
 		dao.createDir(numberOfDirs, path);
 	}
 
-	private void open() {
+	private void deleteFile() {
+		long id = randomSelector.getRandomFile(numberOfFiles);
+		dao.deleteFile(id);
+		// TODO: track deleted files
+	}
+
+	private void listStatusFile() {
+		long id = randomSelector.getRandomFile(numberOfFiles);
+		SimpleOperation op = new SimpleOperation(FileSystemOperationType.LIST_STATUS_FILE, id);
+		dispatcher.dispatch(op);
+	}
+	
+	private void listStatusDir() {
 		long id = randomSelector.getRandomDirectory(numberOfDirs);
-		SimpleOperation op = new SimpleOperation(FileSystemOperationType.OPEN, id);
+		SimpleOperation op = new SimpleOperation(FileSystemOperationType.LIST_STATUS_DIR, id);
 		dispatcher.dispatch(op);
 	}
 
-	private void rename() {
+	private void openFile() {
 		long id = randomSelector.getRandomFile(numberOfFiles);
+		SimpleOperation op = new SimpleOperation(FileSystemOperationType.OPEN_FILE, id);
+		dispatcher.dispatch(op);
+	}
+
+	private void renameFile() {
+//		long id = randomSelector.getRandomFile(numberOfFiles);
 		// TODO: what should be the new name?
 	}
 	

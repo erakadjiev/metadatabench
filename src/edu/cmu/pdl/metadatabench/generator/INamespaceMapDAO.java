@@ -1,6 +1,6 @@
 package edu.cmu.pdl.metadatabench.generator;
 
-public interface INamespaceMapEntryDAO {
+public interface INamespaceMapDAO {
 
 	public void createDir(long id, String path);
 	public String getDir(long id);

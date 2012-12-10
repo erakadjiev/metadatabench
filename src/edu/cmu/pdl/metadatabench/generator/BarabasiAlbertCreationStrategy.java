@@ -7,11 +7,11 @@ public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStr
 	private Random randomId;
 	private Random randomParent;
 
-	public BarabasiAlbertCreationStrategy(INamespaceMapEntryDAO dao){
+	public BarabasiAlbertCreationStrategy(INamespaceMapDAO dao){
 		this(dao, "");
 	}
 	
-	public BarabasiAlbertCreationStrategy(INamespaceMapEntryDAO dao, String workingDirectory){
+	public BarabasiAlbertCreationStrategy(INamespaceMapDAO dao, String workingDirectory){
 		super(dao, workingDirectory);
 		randomId = new Random();
 		randomParent = new Random();

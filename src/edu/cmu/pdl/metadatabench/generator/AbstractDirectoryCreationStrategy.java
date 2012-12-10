@@ -8,9 +8,9 @@ public abstract class AbstractDirectoryCreationStrategy {
 	
 	private String workingDirectory;
 	protected int numberOfDirs;
-	protected INamespaceMapEntryDAO dao;
+	protected INamespaceMapDAO dao;
 	
-	public AbstractDirectoryCreationStrategy(INamespaceMapEntryDAO dao, String workingDirectory){
+	public AbstractDirectoryCreationStrategy(INamespaceMapDAO dao, String workingDirectory){
 		this.workingDirectory = workingDirectory;
 		while(this.workingDirectory.endsWith("/")){
 			this.workingDirectory = this.workingDirectory.substring(0, this.workingDirectory.length() - 1);

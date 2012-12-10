@@ -24,7 +24,6 @@ public class SimpleOperation implements Callable<Long>, Serializable {
 
 	@Override
 	public Long call() throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

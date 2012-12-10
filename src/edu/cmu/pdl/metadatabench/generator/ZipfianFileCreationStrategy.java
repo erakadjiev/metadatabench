@@ -4,10 +4,10 @@ import com.yahoo.ycsb.generator.ZipfianGenerator;
 
 public class ZipfianFileCreationStrategy extends AbstractFileCreationStrategy {
 
-	private INamespaceMapEntryDAO dao;
+	private INamespaceMapDAO dao;
 	private ZipfianGenerator randomGenerator;
 	
-	public ZipfianFileCreationStrategy(INamespaceMapEntryDAO dao){
+	public ZipfianFileCreationStrategy(INamespaceMapDAO dao){
 		super(dao);
 		randomGenerator = new ZipfianGenerator(0);
 	}

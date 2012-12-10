@@ -10,7 +10,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
 import com.hazelcast.partition.PartitionService;
 
-public class HazelcastMapEntryDAO implements INamespaceMapEntryDAO, IOperationDispatcher {
+public class HazelcastMapDAO implements INamespaceMapDAO, IOperationDispatcher {
 
 	private HazelcastInstance hazelcast;
 	private ExecutorService executorService;
@@ -18,7 +18,7 @@ public class HazelcastMapEntryDAO implements INamespaceMapEntryDAO, IOperationDi
 	private IMap<Long,String> dirMap;
 	private IMap<Long,String> fileMap;
 	
-	public HazelcastMapEntryDAO(){
+	public HazelcastMapDAO(){
 		hazelcast = Hazelcast.newHazelcastInstance(null);
 		executorService = hazelcast.getExecutorService();
 		partitionService = hazelcast.getPartitionService();
@@ -66,6 +66,7 @@ public class HazelcastMapEntryDAO implements INamespaceMapEntryDAO, IOperationDi
 		return fileMap.size();
 	}
 
+	// TODO: extract to separate class 
 	@Override
 	public void dispatch(SimpleOperation operation) {
 		Member owner = partitionService.getPartition(operation.getTargetId()).getOwner();

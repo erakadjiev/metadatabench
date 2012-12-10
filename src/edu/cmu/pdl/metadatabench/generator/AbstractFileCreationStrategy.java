@@ -7,9 +7,9 @@ public abstract class AbstractFileCreationStrategy {
 	private static String FILE_NAME_PREFIX = PATH_SEPARATOR + "file";
 	
 	protected int numberOfFiles;
-	protected INamespaceMapEntryDAO dao;
+	protected INamespaceMapDAO dao;
 	
-	public AbstractFileCreationStrategy(INamespaceMapEntryDAO dao){
+	public AbstractFileCreationStrategy(INamespaceMapDAO dao){
 		numberOfFiles = 0;
 		this.dao = dao;
 	}
