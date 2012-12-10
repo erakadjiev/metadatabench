@@ -24,7 +24,7 @@ public class SimpleOperation implements Callable<Long>, Serializable {
 
 	@Override
 	public Long call() throws Exception {
-//		String path = ;
+		StorageNode.getOperationHandler().handleOperation(type, targetId);
 		return null;
 	}
 	

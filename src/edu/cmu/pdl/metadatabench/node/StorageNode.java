@@ -8,6 +8,7 @@ public class StorageNode{
 
 	private static final int THREADS = 100; // TODO: param
 	private static final OperationExecutor executor = new OperationExecutor(new HDFSClient(), THREADS);
+	private static final OperationHandler handler = new OperationHandler(executor, new HazelcastMapReader());
 	
 	private StorageNode(){};
 	
@@ -21,8 +22,8 @@ public class StorageNode{
 		fileMap.addLocalEntryListener(new DirectoryAndFileEntryListener(executor));
 	}
 	
-	public static OperationExecutor getOperationExecutor(){
-		return executor;
+	public static OperationHandler getOperationHandler(){
+		return handler;
 	}
 
 }
