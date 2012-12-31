@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: edu.cmu.pdl.metadatabench.generator.Benchmark
+Class-Path: hazelcast.xml lib/hazelcast-2.4.jar lib/ycsb.jar
+

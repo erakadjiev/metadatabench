@@ -4,18 +4,17 @@ import com.yahoo.ycsb.generator.ZipfianGenerator;
 
 public class ZipfianFileCreationStrategy extends AbstractFileCreationStrategy {
 
-	private INamespaceMapDAO dao;
 	private ZipfianGenerator randomGenerator;
 	
-	public ZipfianFileCreationStrategy(INamespaceMapDAO dao){
-		super(dao);
-		randomGenerator = new ZipfianGenerator(0);
+	public ZipfianFileCreationStrategy(INamespaceMapDAO dao, long numberOfDirs){
+		super(dao, numberOfDirs);
+		randomGenerator = new ZipfianGenerator(numberOfDirs);
 	}
 	
 	@Override
-	public String selectDirectory(long numberOfFiles) {
-		long id = randomGenerator.nextLong(numberOfFiles);
-		String dirPath = dao.getDir(id);
+	public String selectDirectory() {
+		long id = randomGenerator.nextLong();
+		String dirPath = dao.getDir(numberOfDirs - id);
 		return dirPath;
 	}
 

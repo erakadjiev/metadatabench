@@ -9,12 +9,13 @@ public class WorkloadGenerator {
 	private static String DIR_NAME_PREFIX = PATH_SEPARATOR + "dir";
 	private static String FILE_NAME_PREFIX = PATH_SEPARATOR + "file";
 	
-	private static int NUM_OPS = 100000; //TODO: param
+	private int numberOfOperations;
 	public static final Map<FileSystemOperationType,Double> OPERATION_PROBABILITIES = new HashMap<FileSystemOperationType,Double>();
 	static{
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.CREATE, 0.2);
+		OPERATION_PROBABILITIES.put(FileSystemOperationType.LIST_STATUS_FILE, 0.2);
 		OPERATION_PROBABILITIES.put(FileSystemOperationType.LIST_STATUS_DIR, 0.4);
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.OPEN_FILE, 0.4);
+		OPERATION_PROBABILITIES.put(FileSystemOperationType.OPEN_FILE, 0.3);
+		OPERATION_PROBABILITIES.put(FileSystemOperationType.DELETE_FILE, 0.3);
 	}
 	
 	private long numberOfDirs;
@@ -24,17 +25,18 @@ public class WorkloadGenerator {
 	private OperationTypeSelector operationTypeSelector;
 	private DirectoryAndFileSelector randomSelector;
 	
-	public WorkloadGenerator(INamespaceMapDAO dao, long numberOfDirs, long numberOfFiles){
+	public WorkloadGenerator(INamespaceMapDAO dao, int numberOfOperations, long numberOfDirs, long numberOfFiles){
+		this.numberOfOperations = numberOfOperations;
 		this.numberOfDirs = numberOfDirs;
 		this.numberOfFiles = numberOfFiles;
 		this.dao = dao;
 		this.dispatcher = (IOperationDispatcher) dao;
 		operationTypeSelector = new OperationTypeSelector(OPERATION_PROBABILITIES);
-		randomSelector = new DirectoryAndFileSelector();
+		randomSelector = new DirectoryAndFileSelector(numberOfDirs, numberOfFiles);
 	}
 	
 	public void generate(){
-		for(int i=0; i<NUM_OPS; i++){
+		for(int i=0; i<numberOfOperations; i++){
 			FileSystemOperationType operation = operationTypeSelector.getRandomOperationType();
 			switch(operation){
 				case CREATE:

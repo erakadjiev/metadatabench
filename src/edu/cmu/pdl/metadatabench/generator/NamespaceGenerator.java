@@ -22,18 +22,5 @@ public class NamespaceGenerator {
 			fileCreator.createNextFile();
 		}
 	}
-	
-	public static void main(String[] args){
-		long start = System.currentTimeMillis();
-		INamespaceMapDAO dao = new HazelcastMapDAO();
-		AbstractDirectoryCreationStrategy dirCreator = new BarabasiAlbertCreationStrategy(dao, "/workDir");
-		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dao);
-		NamespaceGenerator gen = new NamespaceGenerator(dirCreator, fileCreator);
-		gen.generateDirs(1000000);
-		long end = System.currentTimeMillis();
-		System.out.println((end-start)/1000.0);
-		dirCreator.testPrint();
-		fileCreator.testPrint();
-	}
 
 }
