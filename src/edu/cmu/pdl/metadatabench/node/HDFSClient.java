@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.EnumSet;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CreateFlag;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileAlreadyExistsException;
@@ -21,8 +22,8 @@ public class HDFSClient implements IFileSystemClient {
 	
 	public HDFSClient(){
 		try { // initialize file system handle
-			fileContext = FileContext.getFileContext(new Path("hdfs://localhost:9000").toUri());
-//			fileContext = FileContext.getFileContext(new Configuration());
+//			fileContext = FileContext.getFileContext(new Path("hdfs://localhost:9000").toUri());
+			fileContext = FileContext.getFileContext(new Configuration());
 		} catch (IOException ioe) {
 			System.err.println("Can not initialize the file system: " + ioe.getLocalizedMessage());
 		}

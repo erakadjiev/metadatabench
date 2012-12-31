@@ -3,15 +3,15 @@ package edu.cmu.pdl.metadatabench.node;
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 
-public class DirectoryAndFileEntryListener extends AbstractEntryListener implements EntryListener<Integer, String> {
+public class DirectoryEntryListener extends AbstractEntryListener implements EntryListener<Integer, String> {
 	
-	public DirectoryAndFileEntryListener(OperationExecutor executor) {
+	public DirectoryEntryListener(OperationExecutor executor) {
 		super(executor);
 	}
 
 	@Override
 	public void entryAdded(final EntryEvent<Integer, String> arg0) {
-		executor.create(arg0.getValue());
+		executor.mkdir(arg0.getValue());
 	}
 
 	@Override
