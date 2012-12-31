@@ -3,6 +3,7 @@ package edu.cmu.pdl.metadatabench.generator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 
+import com.hazelcast.config.Config;
 import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -19,7 +20,9 @@ public class HazelcastMapDAO implements INamespaceMapDAO, IOperationDispatcher {
 	private IMap<Long,String> fileMap;
 	
 	public HazelcastMapDAO(){
-		hazelcast = Hazelcast.newHazelcastInstance(null);
+		Config config = new Config();
+		config.setLiteMember(true);
+		hazelcast = Hazelcast.newHazelcastInstance(config);
 		executorService = hazelcast.getExecutorService();
 		partitionService = hazelcast.getPartitionService();
 		dirMap = hazelcast.getMap("directories");
