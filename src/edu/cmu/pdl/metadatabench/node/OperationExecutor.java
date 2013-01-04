@@ -4,21 +4,27 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.hazelcast.core.ICountDownLatch;
+
 public class OperationExecutor {
 
 	private final IFileSystemClient client;
 	private final ExecutorService threadPool;
+	private final ICountDownLatch latch;
 	
 	public OperationExecutor(IFileSystemClient client, int threadCount){
 		this.client = client;
 		this.threadPool = Executors.newFixedThreadPool(threadCount);
+		this.latch = StorageNode.getHazelcastInstance().getCountDownLatch("latch");
 	}
 	
 	public void create(final String path){
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				return client.create(path);
+				long runtime = client.create(path);
+				latch.countDown();
+				return runtime;
 			}
 		};
 		threadPool.submit(op);
@@ -28,7 +34,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				return client.delete(path);
+				long runtime = client.delete(path);
+				latch.countDown();
+				return runtime;
 			}
 		};
 		threadPool.submit(op);
@@ -38,7 +46,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				return client.listStatus(path);
+				long runtime = client.listStatus(path);
+				latch.countDown();
+				return runtime;
 			}
 		};
 		threadPool.submit(op);
@@ -48,7 +58,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				return client.mkdir(path);
+				long runtime = client.mkdir(path);
+				latch.countDown();
+				return runtime;
 			}
 		};
 		threadPool.submit(op);
@@ -58,7 +70,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				return client.open(path);
+				long runtime = client.open(path);
+				latch.countDown();
+				return runtime;
 			}
 		};
 		threadPool.submit(op);
@@ -68,7 +82,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				return client.rename(fromPath, toPath);
+				long runtime = client.rename(fromPath, toPath);
+				latch.countDown();
+				return runtime;
 			}
 		};
 		threadPool.submit(op);
