@@ -26,16 +26,23 @@ public abstract class AbstractDirectoryCreationStrategy {
 		numberOfDirs++;
 		String name = parentPath + DIR_NAME_PREFIX + numberOfDirs;
 		dao.createDir(numberOfDirs, name);
+		dispatch(numberOfDirs);
 	}
 	
 	public void createRoot(){
 		numberOfDirs++;
 		String rootPath = workingDirectory + DIR_NAME_PREFIX + numberOfDirs;
 		dao.createDir(numberOfDirs, rootPath);
+		dispatch(numberOfDirs);
 		numberOfDirs++;
 		String firstDirPath = rootPath + DIR_NAME_PREFIX + numberOfDirs;
 		dao.createDir(numberOfDirs, firstDirPath);
+		dispatch(numberOfDirs);
 	}
 
+	private void dispatch(long id){
+		SimpleOperation op = new SimpleOperation(FileSystemOperationType.MKDIRS, id);
+		((IOperationDispatcher)dao).dispatch(op);
+	}
 	
 }
