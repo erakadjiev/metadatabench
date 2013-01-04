@@ -3,6 +3,7 @@ package edu.cmu.pdl.metadatabench.generator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 
+import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.Hazelcast;
@@ -19,14 +20,18 @@ public class HazelcastMapDAO implements INamespaceMapDAO, IOperationDispatcher {
 	private IMap<Long,String> dirMap;
 	private IMap<Long,String> fileMap;
 	
+	private static final String DIR_MAP_NAME = "directories";
+	private static final String FILE_MAP_NAME = "files";
+	
 	public HazelcastMapDAO(){
-		Config config = new Config();
-		config.setLiteMember(true);
+		System.setProperty("hazelcast.lite.member", "true");
+		Config config = new ClasspathXmlConfig("hazelcast-master.xml");
+		System.out.println(config.getMapConfig("files").getNearCacheConfig().getMaxSize());
 		hazelcast = Hazelcast.newHazelcastInstance(config);
 		executorService = hazelcast.getExecutorService();
 		partitionService = hazelcast.getPartitionService();
-		dirMap = hazelcast.getMap("directories");
-		fileMap = hazelcast.getMap("files");
+		dirMap = hazelcast.getMap(DIR_MAP_NAME);
+		fileMap = hazelcast.getMap(FILE_MAP_NAME);
 	}
 	
 	@Override
@@ -75,6 +80,10 @@ public class HazelcastMapDAO implements INamespaceMapDAO, IOperationDispatcher {
 		Member owner = partitionService.getPartition(operation.getTargetId()).getOwner();
 		FutureTask<Long> task = new DistributedTask<Long>(operation, owner);
 		executorService.execute(task);
+	}
+	
+	public HazelcastInstance getHazelcastInstance(){
+		return hazelcast;
 	}
 
 }
