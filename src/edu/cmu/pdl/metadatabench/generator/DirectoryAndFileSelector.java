@@ -6,19 +6,25 @@ public class DirectoryAndFileSelector {
 	
 	private final ZipfianGenerator dirRNG;
 	private final ZipfianGenerator fileRNG;
+	private final long numberOfDirs;
+	private final long numberOfFiles;
 	
 	public DirectoryAndFileSelector(long numberOfDirs, long numberOfFiles){
+		this.numberOfDirs = numberOfDirs;
+		this.numberOfFiles = numberOfFiles;
 		this.dirRNG = new ZipfianGenerator(numberOfDirs);
 		this.fileRNG = new ZipfianGenerator(numberOfFiles);
 	}
 	
 	public long getRandomDirectory(long items){
-		long id = dirRNG.nextLong() % items;
+		double scaling = items/numberOfDirs; 
+		long id = (long)(dirRNG.nextLong() * scaling);
 		return items - id;
 	}
 	
 	public long getRandomFile(long items){
-		long id = fileRNG.nextLong() % items;
+		double scaling = items/numberOfFiles; 
+		long id = (long)(fileRNG.nextLong() * scaling);
 		return items - id;
 	}
 	
