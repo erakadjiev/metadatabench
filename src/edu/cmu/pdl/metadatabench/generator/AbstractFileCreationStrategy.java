@@ -25,10 +25,4 @@ public abstract class AbstractFileCreationStrategy {
 		dao.createFile(numberOfFiles, name);
 	}
 	
-	public void testPrint(){
-		System.out.println(dao.getNumberOfFiles());
-		System.out.println(dao.getFile(1));
-		System.out.println(dao.getFile(dao.getNumberOfFiles()/2));
-	}
-	
 }
