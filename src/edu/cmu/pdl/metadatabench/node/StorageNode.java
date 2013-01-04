@@ -22,11 +22,11 @@ public class StorageNode{
 	}
 	
 	public static void main(String[] args) {
-		IMap<Integer,String> dirMap = hazelcast.getMap("directories");
-		dirMap.addLocalEntryListener(new DirectoryEntryListener(executor));
-
-		IMap<Integer,String> fileMap = hazelcast.getMap("files");
-		fileMap.addLocalEntryListener(new FileEntryListener(executor));
+//		IMap<Integer,String> dirMap = hazelcast.getMap("directories");
+//		dirMap.addLocalEntryListener(new DirectoryEntryListener(executor));
+//
+//		IMap<Integer,String> fileMap = hazelcast.getMap("files");
+//		fileMap.addLocalEntryListener(new FileEntryListener(executor));
 	}
 	
 	public static OperationHandler getOperationHandler(){

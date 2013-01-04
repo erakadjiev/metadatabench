@@ -22,8 +22,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				long runtime = client.create(path);
-				latch.countDown();
+				long runtime = 0;
+//				long runtime = client.create(path);
+//				latch.countDown();
 				return runtime;
 			}
 		};
@@ -34,8 +35,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				long runtime = client.delete(path);
-				latch.countDown();
+				long runtime = 0;
+//				long runtime = client.delete(path);
+//				latch.countDown();
 				return runtime;
 			}
 		};
@@ -46,8 +48,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				long runtime = client.listStatus(path);
-				latch.countDown();
+				long runtime = 0;
+//				long runtime = client.listStatus(path);
+//				latch.countDown();
 				return runtime;
 			}
 		};
@@ -58,8 +61,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				long runtime = client.mkdir(path);
-				latch.countDown();
+				long runtime = 0;
+//				long runtime = client.mkdir(path);
+//				latch.countDown();
 				return runtime;
 			}
 		};
@@ -70,8 +74,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				long runtime = client.open(path);
-				latch.countDown();
+				long runtime = 0;
+//				long runtime = client.open(path);
+//				latch.countDown();
 				return runtime;
 			}
 		};
@@ -82,8 +87,9 @@ public class OperationExecutor {
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				long runtime = client.rename(fromPath, toPath);
-				latch.countDown();
+				long runtime = 0;
+//				long runtime = client.rename(fromPath, toPath);
+//				latch.countDown();
 				return runtime;
 			}
 		};

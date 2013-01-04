@@ -38,7 +38,9 @@ public class OperationHandler {
 	}
 	
 	private void create(long id) {
-		throw new UnsupportedOperationException("Create file operation cannot be handled.");
+//		throw new UnsupportedOperationException("Create file operation cannot be handled.");
+		String path = mapReader.getDir(id);
+		executor.create(path);
 	}
 	
 	private void mkdir(long id) {
