@@ -11,7 +11,6 @@ public class FileEntryListener extends AbstractEntryListener implements EntryLis
 
 	@Override
 	public void entryAdded(final EntryEvent<Integer, String> arg0) {
-		System.err.println("Create: " + arg0.getValue() + "(was: " + arg0.getOldValue() + ")");
 		executor.create(arg0.getValue());
 	}
 
@@ -22,13 +21,11 @@ public class FileEntryListener extends AbstractEntryListener implements EntryLis
 
 	@Override
 	public void entryRemoved(EntryEvent<Integer, String> arg0) {
-		System.err.println("Remove: " + arg0.getValue() + "(was: " + arg0.getOldValue() + ")");
 		executor.delete(arg0.getValue());
 	}
 
 	@Override
 	public void entryUpdated(EntryEvent<Integer, String> arg0) {
-		System.err.println("Update: " + arg0.getValue() + "(was: " + arg0.getOldValue() + ")");
 		executor.rename(arg0.getOldValue(), arg0.getValue());
 	}
 
