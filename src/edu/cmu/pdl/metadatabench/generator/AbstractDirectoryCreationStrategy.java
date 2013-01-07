@@ -37,10 +37,4 @@ public abstract class AbstractDirectoryCreationStrategy {
 		dao.createDir(numberOfDirs, firstDirPath);
 	}
 	
-	public void testPrint(){
-		System.out.println(dao.getNumberOfDirs());
-		System.out.println(dao.getDir(1));
-		System.out.println(dao.getDir(dao.getNumberOfDirs()/2));
-	}
-	
 }
