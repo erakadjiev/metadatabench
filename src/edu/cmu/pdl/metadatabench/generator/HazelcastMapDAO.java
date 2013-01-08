@@ -26,7 +26,6 @@ public class HazelcastMapDAO implements INamespaceMapDAO, IOperationDispatcher {
 	public HazelcastMapDAO(){
 		System.setProperty("hazelcast.lite.member", "true");
 		Config config = new ClasspathXmlConfig("hazelcast-master.xml");
-		System.out.println(config.getMapConfig("files").getNearCacheConfig().getMaxSize());
 		hazelcast = Hazelcast.newHazelcastInstance(config);
 		executorService = hazelcast.getExecutorService();
 		partitionService = hazelcast.getPartitionService();

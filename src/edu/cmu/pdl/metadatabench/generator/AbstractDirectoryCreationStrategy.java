@@ -19,14 +19,14 @@ public abstract class AbstractDirectoryCreationStrategy {
 		this.dao = dao;
 	}
 	
-	abstract public String selectDirectory();
+//	abstract public String selectDirectory();
+	abstract public long selectDirectoryId();
 	
 	public void createNextDirectory(){
-		String parentPath = selectDirectory();
+		long parentId = selectDirectoryId();
 		numberOfDirs++;
-		String name = parentPath + DIR_NAME_PREFIX + numberOfDirs;
-		dao.createDir(numberOfDirs, name);
-		dispatch(numberOfDirs);
+		String name = DIR_NAME_PREFIX + numberOfDirs;
+		dispatch(parentId, numberOfDirs, name);
 	}
 	
 	public void createRoot(){
@@ -42,6 +42,11 @@ public abstract class AbstractDirectoryCreationStrategy {
 
 	private void dispatch(long id){
 		SimpleOperation op = new SimpleOperation(FileSystemOperationType.MKDIRS, id);
+		((IOperationDispatcher)dao).dispatch(op);
+	}
+	
+	private void dispatch(long parentId, long id, String name){
+		CreateOperation op = new CreateOperation(FileSystemOperationType.MKDIRS, parentId, id, name);
 		((IOperationDispatcher)dao).dispatch(op);
 	}
 	

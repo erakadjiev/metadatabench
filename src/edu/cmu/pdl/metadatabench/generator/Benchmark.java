@@ -32,7 +32,7 @@ public class Benchmark {
 		
 		INamespaceMapDAO dao = new HazelcastMapDAO();
 		ICountDownLatch latch = ((HazelcastMapDAO)dao).getHazelcastInstance().getCountDownLatch("latch"); 
-		AbstractDirectoryCreationStrategy dirCreator = new BarabasiAlbertCreationStrategy(dao, "/workDir");
+		AbstractDirectoryCreationStrategy dirCreator = new UniformCreationStrategy(dao, "/workDir");
 		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dao, numberOfDirs);
 		NamespaceGenerator nsGen = new NamespaceGenerator(dirCreator, fileCreator);
 		

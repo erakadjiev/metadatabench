@@ -7,10 +7,6 @@ public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStr
 	private Random randomId;
 	private Random randomParent;
 
-	public BarabasiAlbertCreationStrategy(INamespaceMapDAO dao){
-		this(dao, "");
-	}
-	
 	public BarabasiAlbertCreationStrategy(INamespaceMapDAO dao, String workingDirectory){
 		super(dao, workingDirectory);
 		randomId = new Random();
@@ -26,6 +22,11 @@ public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStr
 			dirPath = dirPath.substring(0, slashIdx);
 		}
 		return dirPath;
+	}
+
+	@Override
+	public long selectDirectoryId() {
+		throw new UnsupportedOperationException();
 	}
 	
 }
