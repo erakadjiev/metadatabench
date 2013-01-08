@@ -3,15 +3,17 @@ package edu.cmu.pdl.metadatabench.node;
 public class OperationHandler {
 
 	private OperationExecutor executor;
-	private INamespaceMapReader mapReader;
+	private INamespaceMapDAO dao;
 	
-	public OperationHandler(OperationExecutor executor, INamespaceMapReader mapReader){
+	public OperationHandler(OperationExecutor executor, INamespaceMapDAO dao){
 		this.executor = executor;
-		this.mapReader = mapReader;
+		this.dao = dao;
 	};
 	
-	public void handleOperation(FileSystemOperationType type, long targetId){
+	public void handleOperation(SimpleOperation op){
 		//TODO: extract into abstract class
+		FileSystemOperationType type = op.getType();
+		long targetId = op.getTargetId();
 		switch(type){
 			case CREATE:
 				create(targetId);
@@ -37,14 +39,35 @@ public class OperationHandler {
 		}
 	}
 	
+	public void handleOperation(CreateOperation op){
+		FileSystemOperationType type = op.getType();
+		long targetId = op.getTargetId();
+		CreateOperation createOp = (CreateOperation) op;
+		switch(type){
+			case MKDIRS:
+				mkdir(targetId, createOp.getId(), createOp.getName());
+				break;
+			default:
+				break;
+		}
+	}
+	
 	private void create(long id) {
-//		throw new UnsupportedOperationException("Create file operation cannot be handled.");
-		String path = mapReader.getDir(id);
-		executor.create(path);
+		throw new UnsupportedOperationException("Create file operation cannot be handled.");
 	}
 	
 	private void mkdir(long id) {
-		throw new UnsupportedOperationException("Mkdir operation cannot be handled.");
+//		throw new UnsupportedOperationException("Mkdir operation cannot be handled.");
+		String path = dao.getDir(id);
+		executor.mkdir(path);
+	}
+	
+	private void mkdir(long parentId, long id, String name) {
+//		throw new UnsupportedOperationException("Mkdir operation cannot be handled.");
+		String parentPath = dao.getDir(parentId);
+		String path = parentPath + name;
+		dao.createDir(id, path);
+		executor.mkdir(path);
 	}
 
 	private void deleteFile(long id) {
@@ -52,17 +75,17 @@ public class OperationHandler {
 	}
 
 	private void listStatusFile(long id) {
-		String path = mapReader.getFile(id);
+		String path = dao.getFile(id);
 		executor.listStatus(path);
 	}
 	
 	private void listStatusDir(long id) {
-		String path = mapReader.getDir(id);
+		String path = dao.getDir(id);
 		executor.listStatus(path);
 	}
 
 	private void openFile(long id) {
-		String path = mapReader.getFile(id);
+		String path = dao.getFile(id);
 		executor.open(path);
 	}
 

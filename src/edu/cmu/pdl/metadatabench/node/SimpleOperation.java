@@ -24,7 +24,7 @@ public class SimpleOperation implements Callable<Long>, Serializable {
 
 	@Override
 	public Long call() throws Exception {
-		StorageNode.getOperationHandler().handleOperation(type, targetId);
+		StorageNode.getOperationHandler().handleOperation(this);
 		return null;
 	}
 	

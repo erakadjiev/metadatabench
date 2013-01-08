@@ -18,7 +18,7 @@ public class StorageNode{
 		Config config = new ClasspathXmlConfig("hazelcast-node.xml");
 		hazelcast = Hazelcast.newHazelcastInstance(config);
 		executor = new OperationExecutor(new HDFSClient(), THREADS);
-		handler = new OperationHandler(executor, new HazelcastMapReader(hazelcast));
+		handler = new OperationHandler(executor, new HazelcastMapDAO(hazelcast));
 	}
 	
 	public static void main(String[] args) {
