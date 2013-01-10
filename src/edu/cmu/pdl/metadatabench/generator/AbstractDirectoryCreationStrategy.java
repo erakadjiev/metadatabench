@@ -1,10 +1,15 @@
 package edu.cmu.pdl.metadatabench.generator;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 public abstract class AbstractDirectoryCreationStrategy {
 
 	protected static char PATH_SEPARATOR = '/';
-	private static String DIR_NAME_PREFIX = PATH_SEPARATOR + "dir";
+	protected static String DIR_NAME_PREFIX = PATH_SEPARATOR + "dir";
+	
+	protected ExecutorService threadPool;
 	
 	private String workingDirectory;
 	protected int numberOfDirs;
@@ -15,18 +20,12 @@ public abstract class AbstractDirectoryCreationStrategy {
 		while(this.workingDirectory.endsWith("/")){
 			this.workingDirectory = this.workingDirectory.substring(0, this.workingDirectory.length() - 1);
 		}
+		this.threadPool = Executors.newFixedThreadPool(100); // TODO param
 		numberOfDirs = 0;
 		this.dao = dao;
 	}
 	
-	abstract public String selectDirectory();
-	
-	public void createNextDirectory(){
-		String parentPath = selectDirectory();
-		numberOfDirs++;
-		String name = parentPath + DIR_NAME_PREFIX + numberOfDirs;
-		dao.createDir(numberOfDirs, name);
-	}
+	abstract public void createNextDirectory();
 	
 	public void createRoot(){
 		numberOfDirs++;

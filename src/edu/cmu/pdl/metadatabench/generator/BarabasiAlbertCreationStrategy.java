@@ -17,15 +17,35 @@ public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStr
 		randomParent = new Random();
 	}
 	
-	public String selectDirectory(){
-		int id = randomId.nextInt(numberOfDirs-1) + 2;
-		String dirPath = dao.getDir(id);
-		boolean parent = randomParent.nextBoolean();
-		if(parent){
-			int slashIdx = dirPath.lastIndexOf(PATH_SEPARATOR);
-			dirPath = dirPath.substring(0, slashIdx);
+	public void createNextDirectory(){
+		final int id = randomId.nextInt(numberOfDirs-1) + 2;
+		final boolean parent = randomParent.nextBoolean();
+		
+		threadPool.submit(new DirCreationRunnable(numberOfDirs++, id, parent));
+	}
+	
+	private class DirCreationRunnable implements Runnable {
+
+		private long dirNumber;
+		private int id;
+		private boolean parent;
+		
+		public DirCreationRunnable(long dirNumber, int id, boolean parent){
+			this.dirNumber = dirNumber;
+			this.id = id;
+			this.parent = parent;
 		}
-		return dirPath;
+		
+		@Override
+		public void run() {
+			String dirPath = dao.getDir(id);
+			if(parent){
+				int slashIdx = dirPath.lastIndexOf(PATH_SEPARATOR);
+				dirPath = dirPath.substring(0, slashIdx);
+			}
+			String name = dirPath + DIR_NAME_PREFIX + dirNumber;
+			dao.createDir(dirNumber, name);
+		}
 	}
 	
 }
