@@ -4,16 +4,20 @@ public class NamespaceGenerator {
 
 	private AbstractDirectoryCreationStrategy dirCreator;
 	private AbstractFileCreationStrategy fileCreator;
+	private int id;
+	private int masters;
 	
-	public NamespaceGenerator(AbstractDirectoryCreationStrategy dirCreator, AbstractFileCreationStrategy fileCreator){
+	public NamespaceGenerator(AbstractDirectoryCreationStrategy dirCreator, AbstractFileCreationStrategy fileCreator, int id, int masters){
 		this.dirCreator = dirCreator;
 		this.fileCreator = fileCreator;
+		this.id = id;
+		this.masters = masters;
 	}
 	
 	public void generateDirs(int numberOfDirs){
 		dirCreator.createRoot();
-		for(int i=2; i<numberOfDirs; i++){
-			dirCreator.createNextDirectory();
+		for(int i=3+id; i < numberOfDirs; i+=masters){
+			dirCreator.createNextDirectory(i);
 		}
 	}
 	

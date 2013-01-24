@@ -35,7 +35,7 @@ public class HazelcastMapDAO implements INamespaceMapDAO, IOperationDispatcher {
 	
 	@Override
 	public void createDir(long id, String path) {
-		dirMap.put(id, path);
+		dirMap.putAsync(id, path);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class HazelcastMapDAO implements INamespaceMapDAO, IOperationDispatcher {
 
 	@Override
 	public void createFile(long id, String path) {
-		fileMap.put(id, path);
+		fileMap.putAsync(id, path);
 	}
 
 	@Override
