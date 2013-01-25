@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
+
 public class OperationTypeSelector {
 
 	private Random randomNumberGenerator;

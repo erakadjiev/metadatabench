@@ -1,5 +1,10 @@
 package edu.cmu.pdl.metadatabench.node;
 
+import edu.cmu.pdl.metadatabench.cluster.CreateOperation;
+import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
+import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
+
 public class OperationHandler {
 
 	private OperationExecutor executor;

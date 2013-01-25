@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.node;
+package edu.cmu.pdl.metadatabench.cluster;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;

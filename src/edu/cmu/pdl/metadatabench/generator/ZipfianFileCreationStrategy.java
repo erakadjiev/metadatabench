@@ -2,6 +2,8 @@ package edu.cmu.pdl.metadatabench.generator;
 
 import com.yahoo.ycsb.generator.ZipfianGenerator;
 
+import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+
 public class ZipfianFileCreationStrategy extends AbstractFileCreationStrategy {
 
 	private ZipfianGenerator randomGenerator;

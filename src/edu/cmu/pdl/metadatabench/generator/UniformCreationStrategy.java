@@ -2,6 +2,8 @@ package edu.cmu.pdl.metadatabench.generator;
 
 import java.util.Random;
 
+import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+
 public class UniformCreationStrategy extends AbstractDirectoryCreationStrategy {
 
 	private Random randomId;

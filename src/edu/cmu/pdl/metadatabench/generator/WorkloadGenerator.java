@@ -3,6 +3,11 @@ package edu.cmu.pdl.metadatabench.generator;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
+import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
+import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
+
 public class WorkloadGenerator {
 
 	protected static char PATH_SEPARATOR = '/';
@@ -25,12 +30,12 @@ public class WorkloadGenerator {
 	private OperationTypeSelector operationTypeSelector;
 	private DirectoryAndFileSelector randomSelector;
 	
-	public WorkloadGenerator(INamespaceMapDAO dao, int numberOfOperations, long numberOfDirs, long numberOfFiles){
+	public WorkloadGenerator(INamespaceMapDAO dao, IOperationDispatcher dispatcher, int numberOfOperations, long numberOfDirs, long numberOfFiles){
 		this.numberOfOperations = numberOfOperations;
 		this.numberOfDirs = numberOfDirs;
 		this.numberOfFiles = numberOfFiles;
 		this.dao = dao;
-		this.dispatcher = (IOperationDispatcher) dao;
+		this.dispatcher = dispatcher;
 		operationTypeSelector = new OperationTypeSelector(OPERATION_PROBABILITIES);
 		randomSelector = new DirectoryAndFileSelector(numberOfDirs, numberOfFiles);
 	}

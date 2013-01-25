@@ -2,6 +2,8 @@ package edu.cmu.pdl.metadatabench.generator;
 
 import java.util.Random;
 
+import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+
 public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStrategy {
 
 	private Random randomId;
@@ -19,7 +21,7 @@ public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStr
 		this.masters = masters;
 	}
 	
-	public String selectDirectory(int i){
+	public long selectDirectory(int i){
 //		long dirs = numberOfDirs.get();
 //		int id = randomId.nextInt((int)dirs - 1) + 2;
 		int from = i;
@@ -39,7 +41,8 @@ public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStr
 			slashIdx = dirPath.lastIndexOf(PATH_SEPARATOR);
 			dirPath = dirPath.substring(0, slashIdx);
 		}
-		return dirPath;
+//		return dirPath;
+		return 0;
 	}
 	
 }

@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.generator;
+package edu.cmu.pdl.metadatabench.cluster;
 
 @SuppressWarnings("serial")
 public class CreateOperation extends SimpleOperation {

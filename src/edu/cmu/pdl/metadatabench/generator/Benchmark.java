@@ -1,152 +1,73 @@
 package edu.cmu.pdl.metadatabench.generator;
 
-import java.util.Set;
-
-import com.hazelcast.core.AtomicNumber;
-import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.ICountDownLatch;
-import com.hazelcast.core.InstanceDestroyedException;
-import com.hazelcast.core.Member;
-import com.hazelcast.core.MemberLeftException;
-import com.hazelcast.core.MembershipEvent;
-import com.hazelcast.core.MembershipListener;
+
+import edu.cmu.pdl.metadatabench.cluster.HazelcastCluster;
+import edu.cmu.pdl.metadatabench.cluster.ICluster;
+import edu.cmu.pdl.metadatabench.node.Slave;
 
 public class Benchmark {
 
-	private static INamespaceMapDAO dao;
-	private static int numberOfDirs = 0;
-	private static int numberOfFiles = 0;
-	private static int numberOfOperations = 0;
-	
 	private static final int MASTERS = 2;
 	private static final int NODES = 2;
 	
 	public static void main(String[] args) {
 		
+		ICluster cluster = HazelcastCluster.getInstance();
+		HazelcastInstance hazelcast = ((HazelcastCluster)cluster).getHazelcast();
+		
 		if(args.length > 0){
-			if(args[0].equalsIgnoreCase("stop")){
-				stopCluster();
-				System.exit(0);
-			}
-			numberOfDirs = Integer.parseInt(args[0]);
-			if(args.length > 1){
-				numberOfFiles = Integer.parseInt(args[1]);
-				if(args.length > 2){
-					numberOfOperations = Integer.parseInt(args[2]);
-				}
-			}
-		} else {
-			System.out.println("Please enter parameters: benchmark numberOfDirs (numberOfFiles) (numberOfOperations)");
-			System.exit(0);
-		}
-		
-		
-		dao = new HazelcastMapDAO();
-		final HazelcastInstance hazelcast = ((HazelcastMapDAO)dao).getHazelcastInstance();
-		
-		if(allMembersJoined(hazelcast, MASTERS, NODES)){
-			System.out.println("All members joined the cluster. Starting the generation.");
-			start();
-		} else {
-			MembershipListener memberListener = new MembershipListener() {
-				@Override
-				public void memberRemoved(MembershipEvent arg0) {
-					// TODO Auto-generated method stub
-				}
+			String mode = args[0];
+			if(mode.equals("slave")){
+				Slave.start(hazelcast);
+			} else if(mode.equals("master")){
+				int numberOfDirs = 0;
+				int numberOfFiles = 0;
+				int numberOfOperations = 0;
 				
-				@Override
-				public void memberAdded(MembershipEvent arg0) {
-					if(allMembersJoined(hazelcast, MASTERS, NODES)){
-						hazelcast.getCluster().removeMembershipListener(this);
-						System.out.println("All members joined the cluster. Starting the generation.");
-						start();
+				numberOfDirs = Integer.parseInt(args[1]);
+				if(args.length > 2){
+					numberOfFiles = Integer.parseInt(args[2]);
+					if(args.length > 3){
+						numberOfOperations = Integer.parseInt(args[3]);
 					}
 				}
-			};
-			
-			hazelcast.getCluster().addMembershipListener(memberListener);
+				
+				System.out.println("Waiting for all members to join the cluster.");
+
+				while(!cluster.allMembersJoined(MASTERS, NODES)){
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				System.out.println("All members joined the cluster. Starting the generation.");
+				
+				Master.start(hazelcast, MASTERS, numberOfDirs, numberOfFiles, numberOfOperations);
+			} else if(mode.equalsIgnoreCase("stop")){
+				cluster.stop();
+				System.exit(0);
+			} else {
+				printUsage();
+				System.exit(0);
+			}
+		} else {
+			printUsage();
+			System.exit(0);
 		}
-		
-		
-	}
-	
-	private static void start(){
-		HazelcastInstance hazelcast = ((HazelcastMapDAO)dao).getHazelcastInstance();
-//		ICountDownLatch latch = hazelcast.getCountDownLatch("latch"); 
-		
-		AtomicNumber id = hazelcast.getAtomicNumber("id");
-		int i = 0;
-		int j = 1;
-		while(!id.compareAndSet(i, j)){
-			i++; j++;
-		}
-		int ownId = i;
-		System.out.println("own id: " + ownId);
-		
-		AbstractDirectoryCreationStrategy dirCreator = new UniformCreationStrategy(dao, "/workDir", MASTERS);
-		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dao, numberOfDirs);
-		NamespaceGenerator nsGen = new NamespaceGenerator(dirCreator, fileCreator, ownId, MASTERS);
-		
-		System.out.println("Dir creation started");
-//		latch.setCount(numberOfDirs);
-		long start = System.currentTimeMillis();
-		nsGen.generateDirs(numberOfDirs/MASTERS);
-//		awaitLatch(latch);
-		long end = System.currentTimeMillis();
-		System.out.println("Dir time:" + (end-start)/1000.0);
-		
-		if(numberOfFiles > 0){
-			System.out.println("File creation started");
-//			latch.setCount(numberOfFiles);
-			start = System.currentTimeMillis();
-			nsGen.generateFiles(numberOfFiles);
-//			awaitLatch(latch);
-			end = System.currentTimeMillis();
-			System.out.println("File time:" + (end-start)/1000.0);
-		}
-		
-		if(numberOfOperations > 0){
-			System.out.println("Workload generation started");
-			WorkloadGenerator wlGen = new WorkloadGenerator(dao, numberOfOperations, numberOfDirs, numberOfFiles);
-			wlGen.generate();
-			System.out.println(dao.getNumberOfDirs());
-			System.out.println(dao.getNumberOfFiles());
-		}
-	}
-	
-	private static void stopCluster() {
-		// TODO extract and make generic
-		Hazelcast.shutdownAll();
-		
 	}
 
-//	private static void awaitLatch(ICountDownLatch latch){
-//		try {
-//			latch.await();
-//		} catch (MemberLeftException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InstanceDestroyedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-	
-	private static boolean allMembersJoined(HazelcastInstance hazelcast, int masters, int nodes){
-		Set<Member> members = hazelcast.getCluster().getMembers();
-		int masterCount = 0;
-		int nodeCount = 0;
-		for(Member member : members){
-			if(member.isLiteMember()){
-				masterCount++;
-			} else {
-				nodeCount++;
-			}
-		}
-		return (masterCount == masters) && (nodeCount == nodes);
+	private static void printUsage() {
+		System.out.println("Usage: metadatabench master|slave|stop numberOfDirs (numberOfFiles) (numberOfOperations)");
+		System.out.println();
+		System.out.println("master starts a master (generator) node");
+		System.out.println("slave starts a storage and worker node");
+		System.out.println("stop stops all the nodes on the current machine");
+		System.out.println();
+		System.out.println("The last 3 parameters specify how many dirs/files/operations to generate");
+		System.out.println("numberOfFiles and numberOfOperations are optional");
 	}
+	
 }

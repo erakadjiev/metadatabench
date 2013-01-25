@@ -15,7 +15,7 @@ public class OperationExecutor {
 	public OperationExecutor(IFileSystemClient client, int threadCount){
 		this.client = client;
 		this.threadPool = Executors.newFixedThreadPool(threadCount);
-		this.latch = StorageNode.getHazelcastInstance().getCountDownLatch("latch");
+		this.latch = Slave.getHazelcastInstance().getCountDownLatch("latch");
 	}
 	
 	public void create(final String path){

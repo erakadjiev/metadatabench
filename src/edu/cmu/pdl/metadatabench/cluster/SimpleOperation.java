@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.generator;
+package edu.cmu.pdl.metadatabench.cluster;
 
 import java.io.Serializable;
 import java.util.concurrent.Callable;

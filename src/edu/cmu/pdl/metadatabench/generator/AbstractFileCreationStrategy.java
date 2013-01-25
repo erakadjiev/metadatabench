@@ -1,5 +1,7 @@
 package edu.cmu.pdl.metadatabench.generator;
 
+import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+
 
 public abstract class AbstractFileCreationStrategy {
 
