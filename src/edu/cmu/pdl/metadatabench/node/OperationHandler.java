@@ -19,7 +19,11 @@ public class OperationHandler {
 				create(targetId);
 				break;
 			case MKDIRS:
-				mkdir(targetId);
+				if(op instanceof CreateOperation){
+					mkdir(targetId, ((CreateOperation)op).getId(), ((CreateOperation)op).getName());
+				} else {
+					mkdir(targetId);
+				}
 				break;
 			case DELETE_FILE:
 				deleteFile(targetId);
@@ -39,19 +43,6 @@ public class OperationHandler {
 		}
 	}
 	
-	public void handleOperation(CreateOperation op){
-		FileSystemOperationType type = op.getType();
-		long targetId = op.getTargetId();
-		CreateOperation createOp = (CreateOperation) op;
-		switch(type){
-			case MKDIRS:
-				mkdir(targetId, createOp.getId(), createOp.getName());
-				break;
-			default:
-				break;
-		}
-	}
-	
 	private void create(long id) {
 		throw new UnsupportedOperationException("Create file operation cannot be handled.");
 	}
@@ -67,7 +58,10 @@ public class OperationHandler {
 		String parentPath = dao.getDir(parentId);
 		String path = parentPath + name;
 		dao.createDir(id, path);
-		executor.mkdir(path);
+		if(id % 100000 == 0){
+			System.out.println(id + " done");
+		}
+//		executor.mkdir(path);
 	}
 
 	private void deleteFile(long id) {
