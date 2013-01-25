@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: edu.cmu.pdl.metadatabench.generator.Benchmark
-Class-Path: hazelcast-master.xml lib/hazelcast-2.4.jar lib/ycsb.jar
+Class-Path: hazelcast-master.xml hazelcast-node.xml lib/hazelcast-2.4.jar lib/ycsb.jar lib/commons-configuration-1.6.jar lib/commons-lang-2.5.jar lib/commons-logging-1.1.1.jar lib/guava-r09.jar lib/hadoop-auth-0.23.1.jar lib/hadoop-common-0.23.1.jar lib/hadoop-hdfs-0.23.1.jar lib/protobuf-java-2.4.0a.jar
 
