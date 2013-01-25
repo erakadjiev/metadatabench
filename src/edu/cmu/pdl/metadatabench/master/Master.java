@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.generator;
+package edu.cmu.pdl.metadatabench.master;
 
 import com.hazelcast.core.AtomicNumber;
 import com.hazelcast.core.HazelcastInstance;
@@ -7,6 +7,12 @@ import edu.cmu.pdl.metadatabench.cluster.HazelcastDispatcher;
 import edu.cmu.pdl.metadatabench.cluster.HazelcastMapDAO;
 import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
 import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
+import edu.cmu.pdl.metadatabench.master.namespace.AbstractDirectoryCreationStrategy;
+import edu.cmu.pdl.metadatabench.master.namespace.AbstractFileCreationStrategy;
+import edu.cmu.pdl.metadatabench.master.namespace.NamespaceGenerator;
+import edu.cmu.pdl.metadatabench.master.namespace.UniformCreationStrategy;
+import edu.cmu.pdl.metadatabench.master.namespace.ZipfianFileCreationStrategy;
+import edu.cmu.pdl.metadatabench.master.workload.WorkloadGenerator;
 
 public class Master {
 

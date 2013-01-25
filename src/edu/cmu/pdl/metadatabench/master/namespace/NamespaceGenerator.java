@@ -1,4 +1,5 @@
-package edu.cmu.pdl.metadatabench.generator;
+package edu.cmu.pdl.metadatabench.master.namespace;
+
 
 public class NamespaceGenerator {
 

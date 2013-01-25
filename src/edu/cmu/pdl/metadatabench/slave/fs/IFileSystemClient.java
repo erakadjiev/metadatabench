@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.node;
+package edu.cmu.pdl.metadatabench.slave.fs;
 
 public interface IFileSystemClient {
 

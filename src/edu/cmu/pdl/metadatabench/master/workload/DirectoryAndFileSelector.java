@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.generator;
+package edu.cmu.pdl.metadatabench.master.workload;
 
 import com.yahoo.ycsb.generator.ZipfianGenerator;
 

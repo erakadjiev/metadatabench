@@ -1,10 +1,11 @@
-package edu.cmu.pdl.metadatabench.generator;
+package edu.cmu.pdl.metadatabench;
 
 import com.hazelcast.core.HazelcastInstance;
 
 import edu.cmu.pdl.metadatabench.cluster.HazelcastCluster;
 import edu.cmu.pdl.metadatabench.cluster.ICluster;
-import edu.cmu.pdl.metadatabench.node.Slave;
+import edu.cmu.pdl.metadatabench.master.Master;
+import edu.cmu.pdl.metadatabench.slave.Slave;
 
 public class Benchmark {
 

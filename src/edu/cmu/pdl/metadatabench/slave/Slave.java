@@ -1,8 +1,9 @@
-package edu.cmu.pdl.metadatabench.node;
+package edu.cmu.pdl.metadatabench.slave;
 
 import com.hazelcast.core.HazelcastInstance;
 
 import edu.cmu.pdl.metadatabench.cluster.HazelcastMapDAO;
+import edu.cmu.pdl.metadatabench.slave.fs.HDFSClient;
 
 public class Slave{
 

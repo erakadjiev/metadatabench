@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.node;
+package edu.cmu.pdl.metadatabench.slave.fs;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

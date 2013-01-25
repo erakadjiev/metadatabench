@@ -1,10 +1,12 @@
-package edu.cmu.pdl.metadatabench.node;
+package edu.cmu.pdl.metadatabench.slave;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.hazelcast.core.ICountDownLatch;
+
+import edu.cmu.pdl.metadatabench.slave.fs.IFileSystemClient;
 
 public class OperationExecutor {
 

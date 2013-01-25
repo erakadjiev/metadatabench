@@ -1,17 +1,19 @@
-package edu.cmu.pdl.metadatabench.node;
+package edu.cmu.pdl.metadatabench.slave.listener;
 
 import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.EntryListener;
 
-public class DirectoryEntryListener extends AbstractEntryListener implements EntryListener<Integer, String> {
+import edu.cmu.pdl.metadatabench.slave.OperationExecutor;
+
+public class FileEntryListener extends AbstractEntryListener implements EntryListener<Integer, String> {
 	
-	public DirectoryEntryListener(OperationExecutor executor) {
+	public FileEntryListener(OperationExecutor executor) {
 		super(executor);
 	}
 
 	@Override
 	public void entryAdded(final EntryEvent<Integer, String> arg0) {
-		executor.mkdir(arg0.getValue());
+		executor.create(arg0.getValue());
 	}
 
 	@Override

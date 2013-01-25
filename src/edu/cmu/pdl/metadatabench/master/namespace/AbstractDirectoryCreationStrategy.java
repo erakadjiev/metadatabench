@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.generator;
+package edu.cmu.pdl.metadatabench.master.namespace;
 
 import edu.cmu.pdl.metadatabench.cluster.CreateOperation;
 import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;

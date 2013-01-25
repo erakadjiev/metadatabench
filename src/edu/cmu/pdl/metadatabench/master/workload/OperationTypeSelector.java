@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.generator;
+package edu.cmu.pdl.metadatabench.master.workload;
 
 import java.util.ArrayList;
 import java.util.List;

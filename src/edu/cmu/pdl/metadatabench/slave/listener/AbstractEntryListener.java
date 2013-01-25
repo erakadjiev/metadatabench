@@ -1,4 +1,6 @@
-package edu.cmu.pdl.metadatabench.node;
+package edu.cmu.pdl.metadatabench.slave.listener;
+
+import edu.cmu.pdl.metadatabench.slave.OperationExecutor;
 
 public abstract class AbstractEntryListener {
 
