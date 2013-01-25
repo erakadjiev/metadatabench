@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<project name="benchmark-master" default="jar" basedir=".">
+	<target name="jar">
+	    <jar destfile="/home/rakadjiev/benchmark/benchmark-master.jar" manifest="MANIFEST.MF">
+	    	<fileset dir="bin/"/>
+			<fileset file="hazelcast-master.xml"/>
+	    </jar>
+	</target>
+</project>

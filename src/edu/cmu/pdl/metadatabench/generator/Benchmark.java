@@ -84,7 +84,7 @@ public class Benchmark {
 		int ownId = i;
 		System.out.println("own id: " + ownId);
 		
-		AbstractDirectoryCreationStrategy dirCreator = new BarabasiAlbertCreationStrategy(dao, "/workDir", MASTERS);
+		AbstractDirectoryCreationStrategy dirCreator = new UniformCreationStrategy(dao, "/workDir", MASTERS);
 		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dao, numberOfDirs);
 		NamespaceGenerator nsGen = new NamespaceGenerator(dirCreator, fileCreator, ownId, MASTERS);
 		

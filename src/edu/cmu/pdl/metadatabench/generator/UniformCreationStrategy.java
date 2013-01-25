@@ -18,14 +18,13 @@ public class UniformCreationStrategy extends AbstractDirectoryCreationStrategy {
 	}
 
 	@Override
-	public String selectDirectory(int i) {
+	public long selectDirectory(int i) {
 		int from = i;
 		if(i > (masters)){
 			from = i - ((i-1) % masters);
 		}
 		int key = randomId.nextInt(from-1) + 1;
-		String dirPath = dao.getDir(key);
-		return dirPath;
+		return (long) key;
 	}
 
 }
