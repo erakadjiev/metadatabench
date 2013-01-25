@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<project name="benchmark-node" default="jar" basedir=".">
+	<target name="jar">
+	    <jar destfile="/home/rakadjiev/benchmark/benchmark-node.jar" manifest="MANIFEST.MF">
+	    	<fileset dir="bin/"/>
+			<fileset file="hazelcast-node.xml"/>
+	    </jar>
+	</target>
+</project>
