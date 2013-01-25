@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 
-<project name="benchmark-master" default="jar" basedir=".">
+<project name="metadatabench" default="jar" basedir=".">
 	<target name="jar">
-	    <jar destfile="/home/rakadjiev/benchmark/benchmark-master.jar" manifest="MANIFEST.MF">
+	    <jar destfile="/home/rakadjiev/benchmark/metadatabench.jar" manifest="MANIFEST.MF">
 	    	<fileset dir="bin/"/>
-			<fileset file="hazelcast-master.xml"/>
+		<fileset file="hazelcast-master.xml"/>
+		<fileset file="hazelcast-node.xml"/>
 	    </jar>
 	</target>
 </project>
