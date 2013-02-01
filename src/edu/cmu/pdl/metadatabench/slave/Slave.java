@@ -8,7 +8,6 @@ import edu.cmu.pdl.metadatabench.slave.fs.HDFSClient;
 public class Slave{
 
 	private static final int THREADS = 100; // TODO: param
-	private static HazelcastInstance hazelcast;
 	private static OperationExecutor executor;
 	private static OperationHandler handler;
 	
@@ -24,10 +23,6 @@ public class Slave{
 	
 	public static OperationHandler getOperationHandler(){
 		return handler;
-	}
-	
-	public static HazelcastInstance getHazelcastInstance(){
-		return hazelcast;
 	}
 
 }

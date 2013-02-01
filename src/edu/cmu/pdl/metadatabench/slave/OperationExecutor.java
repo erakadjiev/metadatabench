@@ -12,12 +12,12 @@ public class OperationExecutor {
 
 	private final IFileSystemClient client;
 	private final ExecutorService threadPool;
-	private final ICountDownLatch latch;
+//	private final ICountDownLatch latch;
 	
 	public OperationExecutor(IFileSystemClient client, int threadCount){
 		this.client = client;
 		this.threadPool = Executors.newFixedThreadPool(threadCount);
-		this.latch = Slave.getHazelcastInstance().getCountDownLatch("latch");
+//		this.latch = Slave.getHazelcastInstance().getCountDownLatch("latch");
 	}
 	
 	public void create(final String path){

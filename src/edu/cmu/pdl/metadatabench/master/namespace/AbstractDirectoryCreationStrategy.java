@@ -17,13 +17,13 @@ public abstract class AbstractDirectoryCreationStrategy {
 	protected INamespaceMapDAO dao;
 	protected IOperationDispatcher dispatcher;
 	
-	public AbstractDirectoryCreationStrategy(INamespaceMapDAO dao, String workingDirectory){
+	public AbstractDirectoryCreationStrategy(INamespaceMapDAO dao, IOperationDispatcher dispatcher, String workingDirectory){
 		this.workingDirectory = workingDirectory;
 		while(this.workingDirectory.endsWith("/")){
 			this.workingDirectory = this.workingDirectory.substring(0, this.workingDirectory.length() - 1);
 		}
 		this.dao = dao;
-		this.dispatcher = (IOperationDispatcher) dao;
+		this.dispatcher = dispatcher;
 	}
 	
 	abstract public long selectDirectory(int i);

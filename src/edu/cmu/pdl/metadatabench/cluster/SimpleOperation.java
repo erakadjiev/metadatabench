@@ -3,6 +3,8 @@ package edu.cmu.pdl.metadatabench.cluster;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
+import edu.cmu.pdl.metadatabench.slave.Slave;
+
 @SuppressWarnings("serial")
 public class SimpleOperation implements Callable<Long>, Serializable {
 
@@ -24,6 +26,7 @@ public class SimpleOperation implements Callable<Long>, Serializable {
 
 	@Override
 	public Long call() throws Exception {
+		Slave.getOperationHandler().handleOperation(this);
 		return null;
 	}
 	

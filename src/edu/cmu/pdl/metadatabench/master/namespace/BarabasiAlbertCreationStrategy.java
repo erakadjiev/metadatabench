@@ -3,6 +3,7 @@ package edu.cmu.pdl.metadatabench.master.namespace;
 import java.util.Random;
 
 import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
 
 public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStrategy {
 
@@ -10,12 +11,12 @@ public class BarabasiAlbertCreationStrategy extends AbstractDirectoryCreationStr
 	private Random randomParent;
 	private int masters;
 
-	public BarabasiAlbertCreationStrategy(INamespaceMapDAO dao, int masters){
-		this(dao, "", masters);
+	public BarabasiAlbertCreationStrategy(INamespaceMapDAO dao, IOperationDispatcher dispatcher, int masters){
+		this(dao, dispatcher, "", masters);
 	}
 	
-	public BarabasiAlbertCreationStrategy(INamespaceMapDAO dao, String workingDirectory, int masters){
-		super(dao, workingDirectory);
+	public BarabasiAlbertCreationStrategy(INamespaceMapDAO dao, IOperationDispatcher dispatcher, String workingDirectory, int masters){
+		super(dao, dispatcher, workingDirectory);
 		randomId = new Random();
 		randomParent = new Random();
 		this.masters = masters;

@@ -30,14 +30,14 @@ public class Master {
 		int ownId = i;
 		System.out.println("own id: " + ownId);
 		
-		AbstractDirectoryCreationStrategy dirCreator = new UniformCreationStrategy(dao, "/workDir", masters);
+		AbstractDirectoryCreationStrategy dirCreator = new UniformCreationStrategy(dao, dispatcher, "/workDir", masters);
 		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dao, numberOfDirs);
 		NamespaceGenerator nsGen = new NamespaceGenerator(dirCreator, fileCreator, ownId, masters);
 		
 		System.out.println("Dir creation started");
 //		latch.setCount(numberOfDirs);
 		long start = System.currentTimeMillis();
-		nsGen.generateDirs(numberOfDirs/masters);
+		nsGen.generateDirs(numberOfDirs);
 //		awaitLatch(latch);
 		long end = System.currentTimeMillis();
 		System.out.println("Dir time:" + (end-start)/1000.0);

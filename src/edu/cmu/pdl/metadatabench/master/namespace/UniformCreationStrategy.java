@@ -3,18 +3,19 @@ package edu.cmu.pdl.metadatabench.master.namespace;
 import java.util.Random;
 
 import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
 
 public class UniformCreationStrategy extends AbstractDirectoryCreationStrategy {
 
 	private Random randomId;
 	private int masters;
 	
-	public UniformCreationStrategy(INamespaceMapDAO dao, int masters){
-		this(dao, "", masters);
+	public UniformCreationStrategy(INamespaceMapDAO dao, IOperationDispatcher dispatcher, int masters){
+		this(dao, dispatcher, "", masters);
 	}
 	
-	public UniformCreationStrategy(INamespaceMapDAO dao, String workingDirectory, int masters) {
-		super(dao, workingDirectory);
+	public UniformCreationStrategy(INamespaceMapDAO dao, IOperationDispatcher dispatcher, String workingDirectory, int masters) {
+		super(dao, dispatcher, workingDirectory);
 		randomId = new Random();
 		this.masters = masters;
 	}
