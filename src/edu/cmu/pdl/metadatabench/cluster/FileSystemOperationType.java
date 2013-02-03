@@ -7,7 +7,8 @@ public enum FileSystemOperationType {
 	LIST_STATUS_FILE ("listStatusFile"),
 	LIST_STATUS_DIR ("listStatusDir"),
 	OPEN_FILE ("openFile"),
-	RENAME_FILE ("renameFile");
+	RENAME_FILE ("renameFile"),
+	MOVE_FILE ("moveFile");
 	
 	private final String name;
 	

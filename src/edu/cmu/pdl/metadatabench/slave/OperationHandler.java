@@ -45,6 +45,9 @@ public class OperationHandler {
 			case RENAME_FILE:
 				renameFile(targetId);
 				break;
+			case MOVE_FILE:
+				moveFile(targetId);
+				break;
 		}
 	}
 	
@@ -90,6 +93,10 @@ public class OperationHandler {
 
 	private void renameFile(long id) {
 		throw new UnsupportedOperationException("Rename file operation cannot be handled.");
+	}
+	
+	private void moveFile(long id) {
+		throw new UnsupportedOperationException("Move file operation cannot be handled.");
 	}
 	
 }

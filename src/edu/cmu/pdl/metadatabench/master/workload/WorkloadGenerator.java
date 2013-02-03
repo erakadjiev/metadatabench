@@ -65,6 +65,9 @@ public class WorkloadGenerator {
 				case RENAME_FILE:
 					renameFile();
 					break;
+				case MOVE_FILE:
+					moveFile();
+					break;
 			}
 		}
 	}
@@ -112,6 +115,11 @@ public class WorkloadGenerator {
 	private void renameFile() {
 //		long id = randomSelector.getRandomFile(numberOfFiles);
 		// TODO: what should be the new name?
+	}
+	
+	private void moveFile() {
+//		long id = randomSelector.getRandomFile(numberOfFiles);
+		// TODO: new dir
 	}
 	
 }
