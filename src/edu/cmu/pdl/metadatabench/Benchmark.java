@@ -7,7 +7,7 @@ import edu.cmu.pdl.metadatabench.slave.Slave;
 
 public class Benchmark {
 
-	private static final int MASTERS = 2;
+	private static final int MASTERS = 1;
 	private static final int NODES = 2;
 	
 	public static void main(String[] args) {

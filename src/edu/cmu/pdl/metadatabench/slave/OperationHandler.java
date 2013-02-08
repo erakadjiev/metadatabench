@@ -1,5 +1,7 @@
 package edu.cmu.pdl.metadatabench.slave;
 
+import java.util.concurrent.Future;
+
 import edu.cmu.pdl.metadatabench.cluster.CreateOperation;
 import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
 import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
@@ -64,12 +66,23 @@ public class OperationHandler {
 	private void mkdir(long parentId, long id, String name) {
 //		throw new UnsupportedOperationException("Mkdir operation cannot be handled.");
 		String parentPath = dao.getDir(parentId);
+		while(parentPath == null){
+			parentPath = dao.getDir(parentId);
+		}
 		String path = parentPath + name;
 		dao.createDir(id, path);
+		Future<Long> result = executor.mkdir(path);
 		if(id % 100000 == 0){
+			while(!result.isDone()){
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			System.out.println(id + " done");
 		}
-//		executor.mkdir(path);
 	}
 
 	private void deleteFile(long id) {

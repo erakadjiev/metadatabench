@@ -3,6 +3,7 @@ package edu.cmu.pdl.metadatabench.slave;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import com.hazelcast.core.ICountDownLatch;
 
@@ -59,17 +60,17 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
-	public void mkdir(final String path){
+	public Future<Long> mkdir(final String path){
 		Callable<Long> op = new Callable<Long>(){
 			@Override
 			public Long call() throws Exception {
-				long runtime = 0;
-//				long runtime = client.mkdir(path);
+//				long runtime = 0;
+				long runtime = client.mkdir(path);
 //				latch.countDown();
 				return runtime;
 			}
 		};
-		threadPool.submit(op);
+		return threadPool.submit(op);
 	}
 	
 	public void open(final String path){
