@@ -1,6 +1,6 @@
 package edu.cmu.pdl.metadatabench.slave;
 
-import java.util.concurrent.Callable;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,72 +17,102 @@ public class OperationExecutor {
 	}
 	
 	public void create(final String path){
-		Callable<Long> op = new Callable<Long>(){
+		Runnable op = new Runnable(){
 			@Override
-			public Long call() throws Exception {
-				long runtime = client.create(path);
-				Progress.reportCompletedOperation(Thread.currentThread().getId());
-				return runtime;
+			public void run() {
+				try {
+					long runtime = client.create(path);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					Progress.reportCompletedOperation(Thread.currentThread().getId());
+				}
 			}
 		};
 		threadPool.submit(op);
 	}
 	
 	public void delete(final String path){
-		Callable<Long> op = new Callable<Long>(){
+		Runnable op = new Runnable(){
 			@Override
-			public Long call() throws Exception {
-				long runtime = client.delete(path);
-				Progress.reportCompletedOperation(Thread.currentThread().getId());
-				return runtime;
+			public void run() {
+				try {
+					long runtime = client.delete(path);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					Progress.reportCompletedOperation(Thread.currentThread().getId());
+				}
 			}
 		};
 		threadPool.submit(op);
 	}
 	
 	public void listStatus(final String path){
-		Callable<Long> op = new Callable<Long>(){
+		Runnable op = new Runnable(){
 			@Override
-			public Long call() throws Exception {
-				long runtime = client.listStatus(path);
-				Progress.reportCompletedOperation(Thread.currentThread().getId());
-				return runtime;
+			public void run() {
+				try {
+					long runtime = client.listStatus(path);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					Progress.reportCompletedOperation(Thread.currentThread().getId());
+				}
 			}
 		};
 		threadPool.submit(op);
 	}
 	
 	public void mkdir(final String path){
-		Callable<Long> op = new Callable<Long>(){
+		Runnable op = new Runnable(){
 			@Override
-			public Long call() throws Exception {
-				long runtime = client.mkdir(path);
-				Progress.reportCompletedOperation(Thread.currentThread().getId());
-				return runtime;
+			public void run() {
+				try {
+					long runtime = client.mkdir(path);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					Progress.reportCompletedOperation(Thread.currentThread().getId());
+				}
 			}
 		};
 		threadPool.submit(op);
 	}
 	
 	public void open(final String path){
-		Callable<Long> op = new Callable<Long>(){
+		Runnable op = new Runnable(){
 			@Override
-			public Long call() throws Exception {
-				long runtime = client.open(path);
-				Progress.reportCompletedOperation(Thread.currentThread().getId());
-				return runtime;
+			public void run() {
+				try {
+					long runtime = client.open(path);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					Progress.reportCompletedOperation(Thread.currentThread().getId());
+				}
 			}
 		};
 		threadPool.submit(op);
 	}
 	
 	public void rename(final String fromPath, final String toPath){
-		Callable<Long> op = new Callable<Long>(){
+		Runnable op = new Runnable(){
 			@Override
-			public Long call() throws Exception {
-				long runtime = client.rename(fromPath, toPath);
-				Progress.reportCompletedOperation(Thread.currentThread().getId());
-				return runtime;
+			public void run() {
+				try {
+					long runtime = client.rename(fromPath, toPath);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					Progress.reportCompletedOperation(Thread.currentThread().getId());
+				}
 			}
 		};
 		threadPool.submit(op);
