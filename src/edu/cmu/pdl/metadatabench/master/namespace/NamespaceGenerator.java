@@ -19,7 +19,7 @@ public class NamespaceGenerator {
 		if(id == 0){
 			dirCreator.createRoot();
 		}
-		for(int i=3+id; i <= numberOfDirs; i+=masters){
+		for(int i=2+id; i <= numberOfDirs; i+=masters){
 			dirCreator.createNextDirectory(i);
 		}
 	}

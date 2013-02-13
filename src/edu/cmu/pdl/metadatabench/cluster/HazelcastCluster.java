@@ -1,9 +1,11 @@
 package edu.cmu.pdl.metadatabench.cluster;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
+import com.hazelcast.core.AtomicNumber;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.Member;
@@ -12,10 +14,12 @@ public class HazelcastCluster implements ICluster {
 
 	private static final HazelcastCluster instance = new HazelcastCluster();
 	private static HazelcastInstance hazelcast;
+	private static Member master;
+	private static Set<Member> slaves;
 	
 	private HazelcastCluster() {}
 
-	public static ICluster getInstance() {
+	public static HazelcastCluster getInstance() {
 		return instance;
 	}
 
@@ -40,7 +44,28 @@ public class HazelcastCluster implements ICluster {
 	
 	@Override
 	public void stop() {
-		Hazelcast.shutdownAll();
+		hazelcast.getLifecycleService().kill();
+	}
+	
+	@Override
+	public int generateMasterId() {
+		AtomicNumber id = hazelcast.getAtomicNumber("id");
+		return getNextId(id);
+	}
+	
+	@Override
+	public int generateSlaveId() {
+		AtomicNumber id = hazelcast.getAtomicNumber("slaveid");
+		return getNextId(id);
+	}
+	
+	private int getNextId(AtomicNumber id){
+		int i = 0;
+		int j = 1;
+		while(!id.compareAndSet(i, j)){
+			i++; j++;
+		}
+		return i;
 	}
 	
 	@Override
@@ -60,6 +85,31 @@ public class HazelcastCluster implements ICluster {
 	
 	public HazelcastInstance getHazelcast(){
 		return hazelcast;
+	}
+	
+	public Member getMaster(){
+		if(master == null){
+			Set<Member> members = hazelcast.getCluster().getMembers();
+			for(Member member : members){
+				if(member.isLiteMember()){
+					master = member;
+				}
+			}
+		}
+		return master;
+	}
+	
+	public Set<Member> getSlaves(){
+		if(slaves == null){
+			slaves = new HashSet<Member>();
+			Set<Member> members = hazelcast.getCluster().getMembers();
+			for(Member member : members){
+				if(!member.isLiteMember()){
+					slaves.add(member);
+				}
+			}
+		}
+		return slaves;
 	}
 
 }

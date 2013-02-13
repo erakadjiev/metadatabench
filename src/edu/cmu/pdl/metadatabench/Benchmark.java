@@ -18,7 +18,8 @@ public class Benchmark {
 			String mode = args[0];
 			if(mode.equals("slave")){
 				cluster.joinAsSlave();
-				Slave.start(((HazelcastCluster)cluster).getHazelcast());
+				int id = cluster.generateSlaveId();
+				Slave.start(((HazelcastCluster)cluster).getHazelcast(), id);
 			} else if(mode.equals("master")){
 				int numberOfDirs = 0;
 				int numberOfFiles = 0;
@@ -33,6 +34,7 @@ public class Benchmark {
 				}
 				
 				cluster.joinAsMaster();
+				int id = cluster.generateMasterId();
 				System.out.println("Waiting for all members to join the cluster.");
 
 				while(!cluster.allMembersJoined(MASTERS, NODES)){
@@ -45,7 +47,7 @@ public class Benchmark {
 				
 				System.out.println("All members joined the cluster. Starting the generation.");
 				
-				Master.start(((HazelcastCluster)cluster).getHazelcast(), MASTERS, numberOfDirs, numberOfFiles, numberOfOperations);
+				Master.start(((HazelcastCluster)cluster).getHazelcast(), id, MASTERS, numberOfDirs, numberOfFiles, numberOfOperations);
 			} else if(mode.equalsIgnoreCase("stop")){
 				cluster.stop();
 				System.exit(0);

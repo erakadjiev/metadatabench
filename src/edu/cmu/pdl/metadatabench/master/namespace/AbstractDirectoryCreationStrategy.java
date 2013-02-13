@@ -41,8 +41,8 @@ public abstract class AbstractDirectoryCreationStrategy {
 	public void createRoot(){
 		String rootPath = workingDirectory + DIR_NAME_PREFIX + 1;
 		dao.createDir(1, rootPath);
-		String firstDirPath = rootPath + DIR_NAME_PREFIX + 2;
-		dao.createDir(2, firstDirPath);
+		SimpleOperation op = new SimpleOperation(MKDIR_TYPE, 1);
+		dispatcher.dispatch(op);
 	}
 	
 }
