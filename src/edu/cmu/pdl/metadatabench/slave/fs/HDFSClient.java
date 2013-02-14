@@ -16,7 +16,7 @@ public class HDFSClient implements IFileSystemClient {
 	private FileContext fileContext;
 	
 	public HDFSClient(){
-		try { // initialize file system handle
+		try {
 //			fileContext = FileContext.getFileContext(new Path("hdfs://localhost:9000").toUri());
 			fileContext = FileContext.getFileContext(new Configuration());
 		} catch (IOException ioe) {
@@ -26,7 +26,6 @@ public class HDFSClient implements IFileSystemClient {
 	
 	@Override
 	public long create(String path) throws IOException{
-		//TODO: delete created file afterwards?
 		long startTime = System.currentTimeMillis();
 		FSDataOutputStream out = fileContext.create(new Path(path), EnumSet.of(CreateFlag.CREATE, CreateFlag.OVERWRITE),
 					CreateOpts.createParent(), CreateOpts.bufferSize(4096),	CreateOpts.repFac((short) 3));
@@ -36,7 +35,6 @@ public class HDFSClient implements IFileSystemClient {
 	
 	@Override
 	public long delete(String path) throws IOException{
-		//TODO: what is the exact semantic of delete (create temp file/dir to delete it)?
 		long startTime = System.currentTimeMillis();
 		fileContext.delete(new Path(path), true);
 		return System.currentTimeMillis()-startTime;
@@ -51,7 +49,6 @@ public class HDFSClient implements IFileSystemClient {
 	
 	@Override
 	public long mkdir(String path) throws IOException{
-		//TODO: delete created dir afterwards?
 		long startTime = System.currentTimeMillis();
 		fileContext.mkdir(new Path(path), FileContext.DEFAULT_PERM, true);
 		return System.currentTimeMillis()-startTime;
@@ -67,10 +64,14 @@ public class HDFSClient implements IFileSystemClient {
 	
 	@Override
 	public long rename(String fromPath, String toPath) throws IOException{
-		//TODO: what is the exact semantic of rename (create temp file/dir to rename it)?
 		long startTime = System.currentTimeMillis();
 		fileContext.rename(new Path(fromPath), new Path(toPath));
 		return System.currentTimeMillis()-startTime;
+	}
+
+	@Override
+	public long move(String fromPath, String toPath) throws IOException {
+		throw new UnsupportedOperationException("HDFS has no explicit move operation. Use rename instead.");
 	}
 
 }

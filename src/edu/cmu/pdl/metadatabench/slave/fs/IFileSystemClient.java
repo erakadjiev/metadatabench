@@ -15,5 +15,7 @@ public interface IFileSystemClient {
 	public long open(String path) throws IOException;
 
 	public long rename(String fromPath, String toPath) throws IOException;
+
+	public long move(String fromPath, String toPath) throws IOException;
 	
 }

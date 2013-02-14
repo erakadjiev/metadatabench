@@ -1,6 +1,9 @@
 package edu.cmu.pdl.metadatabench.slave;
 
+import java.util.Properties;
+
 import com.hazelcast.core.HazelcastInstance;
+import com.yahoo.ycsb.measurements.Measurements;
 
 import edu.cmu.pdl.metadatabench.cluster.HazelcastDispatcher;
 import edu.cmu.pdl.metadatabench.cluster.HazelcastMapDAO;
@@ -16,6 +19,10 @@ public class Slave{
 	public static void start(HazelcastInstance hazelcast, int id) {
 		executor = new OperationExecutor(new HDFSClient(), THREADS);
 		handler = new OperationHandler(executor, new HazelcastMapDAO(hazelcast));
+		
+		Properties props = new Properties();
+		props.setProperty("measurementtype", "histogram");
+		Measurements.setProperties(props);
 		
 		new Thread(new ProgressReporter(id, new HazelcastDispatcher(hazelcast), REPORT_FREQUENCY)).start();
 	}
