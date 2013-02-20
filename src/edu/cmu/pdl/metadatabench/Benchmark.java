@@ -34,6 +34,13 @@ public class Benchmark {
 				}
 				
 				cluster.joinAsMaster();
+				
+				try {
+					Thread.sleep(2500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
 				int id = cluster.generateMasterId();
 				System.out.println("Waiting for all members to join the cluster.");
 

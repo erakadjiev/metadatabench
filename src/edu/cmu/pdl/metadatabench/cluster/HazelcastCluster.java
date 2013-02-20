@@ -44,7 +44,11 @@ public class HazelcastCluster implements ICluster {
 	
 	@Override
 	public void stop() {
-		hazelcast.getLifecycleService().kill();
+		if(hazelcast != null){
+			hazelcast.getLifecycleService().kill();
+		} else {
+			Hazelcast.shutdownAll();
+		}
 	}
 	
 	@Override

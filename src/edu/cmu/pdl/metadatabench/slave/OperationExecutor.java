@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.yahoo.ycsb.measurements.Measurements;
+import edu.cmu.pdl.metadatabench.measurement.Measurements;
 
 import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
 import edu.cmu.pdl.metadatabench.slave.fs.IFileSystemClient;
