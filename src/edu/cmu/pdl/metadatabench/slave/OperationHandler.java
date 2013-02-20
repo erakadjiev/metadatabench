@@ -7,6 +7,8 @@ import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
 
 public class OperationHandler {
 
+	private static char PATH_SEPARATOR = '/';
+	
 	private OperationExecutor executor;
 	private INamespaceMapDAO dao;
 	
@@ -25,7 +27,7 @@ public class OperationHandler {
 				break;
 			case MKDIRS:
 				if(op instanceof CreateOperation){
-					mkdir(targetId, ((CreateOperation)op).getId(), ((CreateOperation)op).getName());
+					mkdir(targetId, ((CreateOperation)op).getParentsParent(), ((CreateOperation)op).getId(), ((CreateOperation)op).getName());
 				} else {
 					mkdir(targetId);
 				}
@@ -61,11 +63,15 @@ public class OperationHandler {
 		executor.mkdir(path);
 	}
 	
-	private void mkdir(long parentId, long id, String name) {
+	private void mkdir(long parentId, boolean parentsParent, long id, String name) {
 //		throw new UnsupportedOperationException("Mkdir operation cannot be handled.");
 		String parentPath = dao.getDir(parentId);
 		while(parentPath == null){
 			parentPath = dao.getDir(parentId);
+		}
+		if(parentsParent){
+			int slashIdx = parentPath.lastIndexOf(PATH_SEPARATOR);
+			parentPath = parentPath.substring(0, slashIdx);
 		}
 		String path = parentPath + name;
 		dao.createDir(id, path);

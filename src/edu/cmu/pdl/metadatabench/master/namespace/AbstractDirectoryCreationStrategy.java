@@ -10,8 +10,8 @@ import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
 public abstract class AbstractDirectoryCreationStrategy {
 
 	protected static char PATH_SEPARATOR = '/';
-	private static String DIR_NAME_PREFIX = PATH_SEPARATOR + "dir";
-	private static final FileSystemOperationType MKDIR_TYPE = FileSystemOperationType.MKDIRS; 
+	protected static String DIR_NAME_PREFIX = PATH_SEPARATOR + "dir";
+	protected static final FileSystemOperationType MKDIR_TYPE = FileSystemOperationType.MKDIRS; 
 	
 	private String workingDirectory;
 	protected INamespaceMapDAO dao;
@@ -26,13 +26,10 @@ public abstract class AbstractDirectoryCreationStrategy {
 		this.dispatcher = dispatcher;
 	}
 	
-	abstract public long selectDirectory(int i);
+	abstract public long selectParentDirectory(int i);
 	
 	public void createNextDirectory(int i){
-		long parentId = selectDirectory(i);
-//		long dirs = numberOfDirs.incrementAndGet();
-//		String name = parentPath + DIR_NAME_PREFIX + dirs;
-//		dao.createDir(dirs, name);
+		long parentId = selectParentDirectory(i);
 		String name = DIR_NAME_PREFIX + i;
 		SimpleOperation op = new CreateOperation(MKDIR_TYPE, parentId, i, name);
 		dispatcher.dispatch(op);

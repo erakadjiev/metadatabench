@@ -15,12 +15,12 @@ import edu.cmu.pdl.metadatabench.cluster.MeasurementsReset;
 import edu.cmu.pdl.metadatabench.cluster.ProgressReset;
 import edu.cmu.pdl.metadatabench.master.namespace.AbstractDirectoryCreationStrategy;
 import edu.cmu.pdl.metadatabench.master.namespace.AbstractFileCreationStrategy;
+import edu.cmu.pdl.metadatabench.master.namespace.BarabasiAlbertDirectoryCreationStrategy;
 import edu.cmu.pdl.metadatabench.master.namespace.NamespaceGenerator;
-import edu.cmu.pdl.metadatabench.master.namespace.UniformCreationStrategy;
 import edu.cmu.pdl.metadatabench.master.namespace.ZipfianFileCreationStrategy;
 import edu.cmu.pdl.metadatabench.master.workload.WorkloadGenerator;
-import edu.cmu.pdl.metadatabench.measurement.MeasurementDataForNode;
 import edu.cmu.pdl.metadatabench.measurement.MeasurementDataCollection;
+import edu.cmu.pdl.metadatabench.measurement.MeasurementDataForNode;
 import edu.cmu.pdl.metadatabench.measurement.TextMeasurementsExporterExt;
 
 public class Master {
@@ -29,7 +29,7 @@ public class Master {
 		INamespaceMapDAO dao = new HazelcastMapDAO(hazelcast);
 		IOperationDispatcher dispatcher = new HazelcastDispatcher(hazelcast);
 		
-		AbstractDirectoryCreationStrategy dirCreator = new UniformCreationStrategy(dao, dispatcher, "/workDir", masters);
+		AbstractDirectoryCreationStrategy dirCreator = new BarabasiAlbertDirectoryCreationStrategy(dao, dispatcher, "/workDir", masters);
 		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dao, numberOfDirs);
 		NamespaceGenerator nsGen = new NamespaceGenerator(dirCreator, fileCreator, id, masters);
 		
