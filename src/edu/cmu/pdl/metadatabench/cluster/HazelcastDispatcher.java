@@ -3,7 +3,6 @@ package edu.cmu.pdl.metadatabench.cluster;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.FutureTask;
 
 import com.hazelcast.core.DistributedTask;
 import com.hazelcast.core.HazelcastInstance;
@@ -37,34 +36,31 @@ public class HazelcastDispatcher implements IOperationDispatcher {
 
 	@Override
 	public void dispatch(ProgressReset reset) {
-		executecOnSlaves(new DistributedTask<Boolean>(reset, true, slaves));
+		executorService.execute(new DistributedTask<Boolean>(reset, true, getSlaves()));
 	}
 
 	@Override
 	public void dispatch(ProgressFinished finish) {
-		executecOnSlaves(new DistributedTask<Boolean>(finish, true, slaves));
+		executorService.execute(new DistributedTask<Boolean>(finish, true, getSlaves()));
 	}
 
 	@Override
 	public Collection<MeasurementDataForNode> dispatch(MeasurementsCollect collectMeasurement) throws Exception{
-		if(slaves == null){
-			slaves = HazelcastCluster.getInstance().getSlaves();
-		}
-		MultiTask<MeasurementDataForNode> task = new MultiTask<MeasurementDataForNode>(collectMeasurement, slaves); 
+		MultiTask<MeasurementDataForNode> task = new MultiTask<MeasurementDataForNode>(collectMeasurement, getSlaves()); 
 		executorService.execute(task);
 		return task.get();
 	}
 
 	@Override
 	public void dispatch(MeasurementsReset reset) {
-		executecOnSlaves(new DistributedTask<Boolean>(reset, true, slaves));
+		executorService.execute(new DistributedTask<Boolean>(reset, true, getSlaves()));
 	}
 	
-	private void executecOnSlaves(FutureTask<?> task){
+	private Set<Member> getSlaves(){
 		if(slaves == null){
 			slaves = HazelcastCluster.getInstance().getSlaves();
 		}
-		executorService.execute(task);
+		return slaves;
 	}
 
 }

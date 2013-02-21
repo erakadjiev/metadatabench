@@ -11,12 +11,13 @@ import edu.cmu.pdl.metadatabench.slave.fs.IFileSystemClient;
 
 public class OperationExecutor {
 
-	private static final String CREATE_NAME = FileSystemOperationType.MKDIRS.getName();
+	private static final String CREATE_NAME = FileSystemOperationType.CREATE.getName();
 	private static final String DELETE_NAME = FileSystemOperationType.MKDIRS.getName();
-	private static final String LIST_STATUS_NAME = FileSystemOperationType.MKDIRS.getName();
+	private static final String LIST_STATUS_FILE_NAME = FileSystemOperationType.LIST_STATUS_FILE.getName();
+	private static final String LIST_STATUS_DIR_NAME = FileSystemOperationType.LIST_STATUS_DIR.getName();
 	private static final String MKDIR_NAME = FileSystemOperationType.MKDIRS.getName();
-	private static final String OPEN_NAME = FileSystemOperationType.MKDIRS.getName();
-	private static final String RENAME_NAME = FileSystemOperationType.MKDIRS.getName();
+	private static final String OPEN_NAME = FileSystemOperationType.OPEN_FILE.getName();
+	private static final String RENAME_NAME = FileSystemOperationType.RENAME_FILE.getName();
 	
 	private static final int FAILURE_CODE = -1;
 	
@@ -66,16 +67,34 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
-	public void listStatus(final String path){
+	public void listStatusFile(final String path){
 		Runnable op = new Runnable(){
 			@Override
 			public void run() {
 				try {
 					long runtime = client.listStatus(path);
-					measurements.measure(LIST_STATUS_NAME, (int)runtime);
+					measurements.measure(LIST_STATUS_FILE_NAME, (int)runtime);
 				} catch (IOException e) {
 					e.printStackTrace();
-					measurements.reportReturnCode(LIST_STATUS_NAME, FAILURE_CODE);
+					measurements.reportReturnCode(LIST_STATUS_FILE_NAME, FAILURE_CODE);
+				} finally {
+					Progress.reportCompletedOperation(Thread.currentThread().getId());
+				}
+			}
+		};
+		threadPool.submit(op);
+	}
+	
+	public void listStatusDir(final String path){
+		Runnable op = new Runnable(){
+			@Override
+			public void run() {
+				try {
+					long runtime = client.listStatus(path);
+					measurements.measure(LIST_STATUS_DIR_NAME, (int)runtime);
+				} catch (IOException e) {
+					e.printStackTrace();
+					measurements.reportReturnCode(LIST_STATUS_DIR_NAME, FAILURE_CODE);
 				} finally {
 					Progress.reportCompletedOperation(Thread.currentThread().getId());
 				}

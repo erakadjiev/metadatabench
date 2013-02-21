@@ -28,6 +28,7 @@ public class Progress {
 	}
 	
 	public static void reset(){
+		System.out.println("All operations done.");
 		operationsDonePerThread = new HashMap<Long,Integer>();
 	}
 	

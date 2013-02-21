@@ -23,7 +23,11 @@ public class OperationHandler {
 		long targetId = op.getTargetId();
 		switch(type){
 			case CREATE:
-				create(targetId);
+				if(op instanceof CreateOperation){
+					create(targetId, ((CreateOperation)op).getId(), ((CreateOperation)op).getName());
+				} else {
+					create(targetId);
+				}
 				break;
 			case MKDIRS:
 				if(op instanceof CreateOperation){
@@ -57,14 +61,22 @@ public class OperationHandler {
 		throw new UnsupportedOperationException("Create file operation cannot be handled.");
 	}
 	
+	private void create(long parentId, long id, String name) {
+		String parentPath = dao.getDir(parentId);
+		while(parentPath == null){
+			parentPath = dao.getDir(parentId);
+		}
+		String path = parentPath + name;
+		dao.createFile(id, path);
+		executor.create(path);
+	}
+	
 	private void mkdir(long id) {
-//		throw new UnsupportedOperationException("Mkdir operation cannot be handled.");
 		String path = dao.getDir(id);
 		executor.mkdir(path);
 	}
 	
 	private void mkdir(long parentId, boolean parentsParent, long id, String name) {
-//		throw new UnsupportedOperationException("Mkdir operation cannot be handled.");
 		String parentPath = dao.getDir(parentId);
 		while(parentPath == null){
 			parentPath = dao.getDir(parentId);
@@ -84,12 +96,12 @@ public class OperationHandler {
 
 	private void listStatusFile(long id) {
 		String path = dao.getFile(id);
-		executor.listStatus(path);
+		executor.listStatusFile(path);
 	}
 	
 	private void listStatusDir(long id) {
 		String path = dao.getDir(id);
-		executor.listStatus(path);
+		executor.listStatusDir(path);
 	}
 
 	private void openFile(long id) {

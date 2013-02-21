@@ -21,6 +21,7 @@ public class ProgressBarrier {
 		operationsDonePerNode.put(nodeId, operationsDone);
 		int opsSum = sumOfOperations();
 		System.out.println(opsSum + " operations done");
+//		if(opsSum == operationsNeeded){
 		if(opsSum == operationsNeeded){
 			latch.countDown();
 		}

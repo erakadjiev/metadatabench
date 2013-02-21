@@ -30,7 +30,7 @@ public class Master {
 		IOperationDispatcher dispatcher = new HazelcastDispatcher(hazelcast);
 		
 		AbstractDirectoryCreationStrategy dirCreator = new BarabasiAlbertDirectoryCreationStrategy(dao, dispatcher, "/workDir", masters);
-		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dao, numberOfDirs);
+		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dispatcher, numberOfDirs);
 		NamespaceGenerator nsGen = new NamespaceGenerator(dirCreator, fileCreator, id, masters);
 		
 		if(numberOfDirs > 0){
@@ -48,27 +48,13 @@ public class Master {
 			System.out.println("Dir creation done in: " + creationTime + " s");
 			System.out.println("Throughput: " + (numberOfDirs/creationTime) + " ops/s");
 			ProgressBarrier.reset();
-			MeasurementDataCollection measurements = MeasurementDataCollection.getInstance();
-			try {
-				Collection<MeasurementDataForNode> measurementDataCollection = dispatcher.dispatch(new MeasurementsCollect());
-				for(MeasurementDataForNode measurementData : measurementDataCollection){
-					measurements.addMeasurementData(measurementData);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			dispatcher.dispatch(new MeasurementsReset());
 			dispatcher.dispatch(new ProgressReset());
-			try {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				TextMeasurementsExporterExt exporter = new TextMeasurementsExporterExt(baos);
-				measurements.exportMeasurements(exporter);
-//				measurements.exportMeasurementsPerNode(exporter);
-				exporter.close();
-				System.out.println(baos.toString());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		}
+		
+		try {
+			Thread.sleep(2500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		
 		if(numberOfFiles > 0){
@@ -76,7 +62,18 @@ public class Master {
 			long start = System.currentTimeMillis();
 			nsGen.generateFiles(numberOfFiles);
 			long end = System.currentTimeMillis();
-			System.out.println("File time:" + (end-start)/1000.0);
+			System.out.println(numberOfFiles + " files generated in: " + (end-start)/1000.0);
+			try {
+				ProgressBarrier.awaitOperationCompletion(numberOfFiles);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			double creationTime = (System.currentTimeMillis()-start)/1000.0;
+			System.out.println("File creation done in: " + creationTime + " s");
+			System.out.println("Throughput: " + (numberOfFiles/creationTime) + " ops/s");
+			ProgressBarrier.reset();
+			dispatcher.dispatch(new ProgressReset());
+			collectAndExportMeasurements(dispatcher);
 		}
 		
 		if(numberOfOperations > 0){
@@ -86,6 +83,30 @@ public class Master {
 			System.out.println(dao.getNumberOfDirs());
 			System.out.println(dao.getNumberOfFiles());
 		}
+	}
+	
+	private static void collectAndExportMeasurements(IOperationDispatcher dispatcher){
+		MeasurementDataCollection measurements = MeasurementDataCollection.getInstance();
+		try {
+			Collection<MeasurementDataForNode> measurementDataCollection = dispatcher.dispatch(new MeasurementsCollect());
+			for(MeasurementDataForNode measurementData : measurementDataCollection){
+				measurements.addMeasurementData(measurementData);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			TextMeasurementsExporterExt exporter = new TextMeasurementsExporterExt(baos);
+			measurements.exportMeasurements(exporter);
+//			measurements.exportMeasurementsPerNode(exporter);
+			exporter.close();
+			System.out.println(baos.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		dispatcher.dispatch(new MeasurementsReset());
+		measurements.reset();
 	}
 
 }

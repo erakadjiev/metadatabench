@@ -73,7 +73,7 @@ public class Measurements{
 
 		warmUpTime = Integer.parseInt(_props.getProperty(MEASUREMENT_WARM_UP, MEASUREMENT_WARM_UP_DEFAULT));
 		firstMeasurementTimeStamp = 0;
-		warmUpDone = false;
+		warmUpDone = (warmUpTime == 0) ? true : false;
 		
 		if (_props.getProperty(MEASUREMENT_TYPE, MEASUREMENT_TYPE_DEFAULT).compareTo("histogram") == 0) {
 			histogram = true;
@@ -93,7 +93,7 @@ public class Measurements{
 	public void cleanMeasurement() {
 		data = new HashMap<String, OneMeasurement>();
 		firstMeasurementTimeStamp = 0;
-		warmUpDone = false;
+		warmUpDone = (warmUpTime == 0) ? true : false;
 	}
 
 	/**

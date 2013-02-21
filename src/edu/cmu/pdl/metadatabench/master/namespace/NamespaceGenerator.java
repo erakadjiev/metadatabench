@@ -25,8 +25,8 @@ public class NamespaceGenerator {
 	}
 	
 	public void generateFiles(int numberOfFiles){
-		for(int i=0; i<numberOfFiles; i++){
-			fileCreator.createNextFile();
+		for(int i=1+id; i <= numberOfFiles; i+=masters){
+			fileCreator.createNextFile(i);
 		}
 	}
 

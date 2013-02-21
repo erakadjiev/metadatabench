@@ -14,7 +14,7 @@ public class Slave{
 
 	private static final int THREADS = 100; // TODO: param
 	private static final long REPORT_FREQUENCY = 2500;
-	private static final String MEASUREMENT_WARM_UP_TIME = "20000";
+	private static final String MEASUREMENT_WARM_UP_TIME = "0";
 	private static OperationExecutor executor;
 	private static OperationHandler handler;
 	

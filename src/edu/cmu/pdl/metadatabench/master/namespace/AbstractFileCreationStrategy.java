@@ -1,30 +1,32 @@
 package edu.cmu.pdl.metadatabench.master.namespace;
 
-import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+import edu.cmu.pdl.metadatabench.cluster.CreateOperation;
+import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
+import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
+import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
 
 
 public abstract class AbstractFileCreationStrategy {
 
-	protected static char PATH_SEPARATOR = '/';
-	private static String FILE_NAME_PREFIX = PATH_SEPARATOR + "file";
+	protected static final char PATH_SEPARATOR = '/';
+	protected static final String FILE_NAME_PREFIX = PATH_SEPARATOR + "file";
+	protected static final FileSystemOperationType CREATE_TYPE = FileSystemOperationType.CREATE; 
 	
-	protected long numberOfFiles;
 	protected long numberOfDirs;
-	protected INamespaceMapDAO dao;
+	protected IOperationDispatcher dispatcher;
 	
-	public AbstractFileCreationStrategy(INamespaceMapDAO dao, long numberOfDirs){
+	public AbstractFileCreationStrategy(IOperationDispatcher dispatcher, long numberOfDirs){
 		this.numberOfDirs = numberOfDirs;
-		this.numberOfFiles = 0;
-		this.dao = dao;
+		this.dispatcher = dispatcher;
 	}
 	
-	abstract public String selectDirectory();
+	abstract public long selectParentDirectory();
 	
-	public void createNextFile(){
-		String parentPath = selectDirectory();
-		numberOfFiles++;
-		String name = parentPath + FILE_NAME_PREFIX + numberOfFiles;
-		dao.createFile(numberOfFiles, name);
+	public void createNextFile(int i){
+		long parentId = selectParentDirectory();
+		String name = FILE_NAME_PREFIX + i;
+		SimpleOperation op = new CreateOperation(CREATE_TYPE, parentId, i, name);
+		dispatcher.dispatch(op);
 	}
 	
 }

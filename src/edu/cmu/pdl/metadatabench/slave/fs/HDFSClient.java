@@ -8,7 +8,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CreateFlag;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileContext;
-import org.apache.hadoop.fs.Options.CreateOpts;
 import org.apache.hadoop.fs.Path;
 
 public class HDFSClient implements IFileSystemClient {
@@ -27,8 +26,7 @@ public class HDFSClient implements IFileSystemClient {
 	@Override
 	public long create(String path) throws IOException{
 		long startTime = System.currentTimeMillis();
-		FSDataOutputStream out = fileContext.create(new Path(path), EnumSet.of(CreateFlag.CREATE, CreateFlag.OVERWRITE),
-					CreateOpts.createParent(), CreateOpts.bufferSize(4096),	CreateOpts.repFac((short) 3));
+		FSDataOutputStream out = fileContext.create(new Path(path), EnumSet.of(CreateFlag.CREATE, CreateFlag.OVERWRITE));
 		out.close();
 		return System.currentTimeMillis()-startTime;
 	}

@@ -5,18 +5,18 @@ import edu.cmu.pdl.metadatabench.cluster.ProgressReport;
 
 public class ProgressReporter implements Runnable {
 
-	private int id;
-	private IOperationDispatcher dispatcher;
-	private long reportFrequencyMillis;
-	private int lastReportedNumber;
+	private static int id;
+	private static IOperationDispatcher dispatcher;
+	private static long reportFrequencyMillis;
+	private static int lastReportedNumber;
 	
 	private static volatile boolean stopFlag = false;
 	
 	public ProgressReporter(int nodeId, IOperationDispatcher dispatcher, long reportFrequencyMillis) {
-		this.id = nodeId;
-		this.dispatcher = dispatcher;
-		this.reportFrequencyMillis = reportFrequencyMillis;
-		this.lastReportedNumber = 0;
+		ProgressReporter.id = nodeId;
+		ProgressReporter.dispatcher = dispatcher;
+		ProgressReporter.reportFrequencyMillis = reportFrequencyMillis;
+		ProgressReporter.lastReportedNumber = 0;
 	}
 
 	@Override
@@ -34,6 +34,10 @@ public class ProgressReporter implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static void reset(){
+		lastReportedNumber = 0;
 	}
 	
 	public static void stop(){
