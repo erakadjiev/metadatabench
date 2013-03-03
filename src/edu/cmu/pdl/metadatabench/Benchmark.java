@@ -41,7 +41,6 @@ public class Benchmark {
 					e.printStackTrace();
 				}
 				
-				int id = cluster.generateMasterId();
 				System.out.println("Waiting for all members to join the cluster.");
 
 				while(!cluster.allMembersJoined(MASTERS, NODES)){
@@ -54,6 +53,7 @@ public class Benchmark {
 				
 				System.out.println("All members joined the cluster. Starting the generation.");
 				
+				int id = cluster.generateMasterId();
 				Master.start(((HazelcastCluster)cluster).getHazelcast(), id, MASTERS, numberOfDirs, numberOfFiles, numberOfOperations);
 			} else if(mode.equalsIgnoreCase("stop")){
 				cluster.stop();

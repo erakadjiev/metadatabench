@@ -8,7 +8,7 @@ public class ProgressReporter implements Runnable {
 	private static int id;
 	private static IOperationDispatcher dispatcher;
 	private static long reportFrequencyMillis;
-	private static int lastReportedNumber;
+	private static long lastReportedNumber;
 	
 	private static volatile boolean stopFlag = false;
 	
@@ -22,7 +22,7 @@ public class ProgressReporter implements Runnable {
 	@Override
 	public void run() {
 		while(!stopFlag){
-			int ops = Progress.getOperationsDone();
+			long ops = Progress.getOperationsDone();
 			if(ops > lastReportedNumber){
 				System.out.println(ops + " operations done");
 				lastReportedNumber = ops;

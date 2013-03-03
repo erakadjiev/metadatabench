@@ -39,7 +39,7 @@ public class Measurements{
 
 	static Measurements singleton = null;
 	static Properties measurementproperties = null;
-
+	
 	public static void setProperties(Properties props) {
 		measurementproperties = props;
 	}
@@ -117,13 +117,7 @@ public class Measurements{
 	}
 	
 	private void doMeasurement(String operation, int latency){
-		if (!data.containsKey(operation)) {
-			synchronized (this) {
-				if (!data.containsKey(operation)) {
-					data.put(operation, constructOneMeasurement(operation));
-				}
-			}
-		}
+		initOperation(operation);
 		try {
 			data.get(operation).measure(latency);
 		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
@@ -137,14 +131,13 @@ public class Measurements{
 	 * Report a return code for a single DB operaiton.
 	 */
 	public void reportReturnCode(String operation, int code) {
-		if (!data.containsKey(operation)) {
-			synchronized (this) {
-				if (!data.containsKey(operation)) {
-					data.put(operation, constructOneMeasurement(operation));
-				}
-			}
-		}
+		initOperation(operation);
 		data.get(operation).reportReturnCode(code);
+	}
+	
+	public void reportException(String operation, String exceptionType) {
+		initOperation(operation);
+		data.get(operation).reportException(exceptionType);
 	}
 
 	/**
@@ -190,4 +183,13 @@ public class Measurements{
 		return new MeasurementDataForNode(nodeId, data, histogram);
 	}
 	
+	private void initOperation(String operation){
+		if (!data.containsKey(operation)) {
+			synchronized (this) {
+				if (!data.containsKey(operation)) {
+					data.put(operation, constructOneMeasurement(operation));
+				}
+			}
+		}
+	}
 }

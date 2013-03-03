@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Set;
 
 import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
 
@@ -130,10 +131,15 @@ public class OneMeasurementHistogram extends OneMeasurement {
 			exporter.write(getName(), "Return=" + I, val[0]);
 		}
 
-		for (int i = 0; i < _buckets; i++) {
-			exporter.write(getName(), Integer.toString(i), histogram[i]);
+		Set<String> exceptionSet = exceptions.keySet();
+		for (String exception : exceptionSet){
+			exporter.write(getName(), exception, exceptions.get(exception));
 		}
-		exporter.write(getName(), ">" + _buckets, histogramoverflow);
+		
+//		for (int i = 0; i < _buckets; i++) {
+//			exporter.write(getName(), Integer.toString(i), histogram[i]);
+//		}
+//		exporter.write(getName(), ">" + _buckets, histogramoverflow);
 	}
 
 	@Override
@@ -179,6 +185,7 @@ public class OneMeasurementHistogram extends OneMeasurement {
 				max = measurementHistogram.max;
 			}
 			combineReturnCodeMaps(returncodes, measurementHistogram.returncodes);
+			combineExceptionMaps(exceptions, measurementHistogram.exceptions);
 		}
 		
 	}
@@ -198,6 +205,7 @@ public class OneMeasurementHistogram extends OneMeasurement {
 		OneMeasurementHistogram clone = (OneMeasurementHistogram) super.clone();
 		clone.histogram = histogram.clone();
 		clone.returncodes = cloneReturnCodeMap(returncodes);
+		clone.exceptions = cloneExceptionMap(exceptions);
 		return clone;
 	}
 

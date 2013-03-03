@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
@@ -157,6 +158,11 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 			exporter.write(getName(), "Return=" + I, val[0]);
 		}
 
+		Set<String> exceptionSet = exceptions.keySet();
+		for (String exception : exceptionSet){
+			exporter.write(getName(), exception, exceptions.get(exception));
+		}
+		
 		for (SeriesUnit unit : _measurements) {
 			exporter.write(getName(), Long.toString(unit.time), unit.average);
 		}
@@ -219,6 +225,7 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 				max = measurementTS.max;
 			}
 			combineReturnCodeMaps(returncodes, measurementTS.returncodes);
+			combineExceptionMaps(exceptions, measurementTS.exceptions);
 		}
 		
 	}
@@ -253,6 +260,7 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 			clone._measurements.add(i, unit.clone());
 		}
 		clone.returncodes = cloneReturnCodeMap(returncodes);
+		clone.exceptions = cloneExceptionMap(exceptions);
 		return clone;
 	}
 

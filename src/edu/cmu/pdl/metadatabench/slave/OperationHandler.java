@@ -3,11 +3,13 @@ package edu.cmu.pdl.metadatabench.slave;
 import edu.cmu.pdl.metadatabench.cluster.CreateOperation;
 import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
 import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
+import edu.cmu.pdl.metadatabench.cluster.MoveOperation;
 import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
 
 public class OperationHandler {
 
 	private static char PATH_SEPARATOR = '/';
+	private static String RENAME_SUFFIX = ".r";
 	
 	private OperationExecutor executor;
 	private INamespaceMapDAO dao;
@@ -26,7 +28,7 @@ public class OperationHandler {
 				if(op instanceof CreateOperation){
 					create(targetId, ((CreateOperation)op).getId(), ((CreateOperation)op).getName());
 				} else {
-					create(targetId);
+					System.out.println("\"CREATE\" operation type has to have a CreateOperation object");;
 				}
 				break;
 			case MKDIRS:
@@ -52,17 +54,20 @@ public class OperationHandler {
 				renameFile(targetId);
 				break;
 			case MOVE_FILE:
-				moveFile(targetId);
+				if(op instanceof MoveOperation){
+					moveFile(targetId, ((MoveOperation)op).getParentIdNew());
+				} else {
+					System.out.println("\"MOVE\" operation type has to have a MoveOperation object");
+				}
 				break;
+			default:
+				System.out.println("Unknown operation");
 		}
-	}
-	
-	private void create(long id) {
-		throw new UnsupportedOperationException("Create file operation cannot be handled.");
 	}
 	
 	private void create(long parentId, long id, String name) {
 		String parentPath = dao.getDir(parentId);
+		// TODO: timeout if parent directory not found
 		while(parentPath == null){
 			parentPath = dao.getDir(parentId);
 		}
@@ -71,8 +76,11 @@ public class OperationHandler {
 		executor.create(path);
 	}
 	
-	private void mkdir(long id) {
+	private void mkdir(long id){
 		String path = dao.getDir(id);
+		while(path == null){
+			path = dao.getDir(id);
+		}
 		executor.mkdir(path);
 	}
 	
@@ -91,7 +99,9 @@ public class OperationHandler {
 	}
 
 	private void deleteFile(long id) {
-		throw new UnsupportedOperationException("Delete file operation cannot be handled.");
+		String path = dao.getFile(id);
+		executor.delete(path);
+		dao.deleteFile(id);
 	}
 
 	private void listStatusFile(long id) {
@@ -110,11 +120,47 @@ public class OperationHandler {
 	}
 
 	private void renameFile(long id) {
-		throw new UnsupportedOperationException("Rename file operation cannot be handled.");
+		String path = dao.getFile(id);
+		String pathNew = path;
+		try{
+			pathNew = incrementRenameCounterExtension(path);
+			dao.renameFile(id, pathNew);
+		} catch (NullPointerException e){
+		} finally {
+			executor.rename(path, pathNew);
+		}
 	}
 	
-	private void moveFile(long id) {
-		throw new UnsupportedOperationException("Move file operation cannot be handled.");
+	private void moveFile(long id, long parentIdNew) {
+		String path = dao.getFile(id);
+		String parentPathNew = dao.getDir(parentIdNew);
+		String pathNew = path;
+		try{
+			int slashIdx = path.lastIndexOf(PATH_SEPARATOR);
+			String fileName = path.substring(slashIdx);
+			pathNew = parentPathNew + fileName;
+			if(pathNew.equals(path)){
+				pathNew = incrementRenameCounterExtension(pathNew);
+			}
+			dao.renameFile(id, pathNew);
+		} catch(NullPointerException e){
+		} finally {
+			executor.move(path, pathNew);
+		}
+	}
+	
+	private String incrementRenameCounterExtension(String path){
+		int slashIdx = path.lastIndexOf(PATH_SEPARATOR);
+		String fileName = path.substring(slashIdx+1);
+		if(fileName.contains(RENAME_SUFFIX)){
+			int suffixIdx = path.lastIndexOf(RENAME_SUFFIX);
+			String pathWithoutSuffix = path.substring(0, suffixIdx);
+			int renameCounter = Integer.parseInt(path.substring(suffixIdx+2));
+			renameCounter++;
+			return pathWithoutSuffix + RENAME_SUFFIX + renameCounter;
+		} else {
+			return path + RENAME_SUFFIX + "1";
+		}
 	}
 	
 }

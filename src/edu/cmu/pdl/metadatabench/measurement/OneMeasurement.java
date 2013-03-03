@@ -29,9 +29,11 @@ import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
  */
 @SuppressWarnings("serial")
 public abstract class OneMeasurement implements Serializable, Cloneable {
-
+	
 	String _name;
-
+	
+	protected HashMap<String, Integer> exceptions;
+	
 	public String getName() {
 		return _name;
 	}
@@ -41,10 +43,19 @@ public abstract class OneMeasurement implements Serializable, Cloneable {
 	 */
 	public OneMeasurement(String _name) {
 		this._name = _name;
+		exceptions = new HashMap<String, Integer>();
 	}
 
 	public abstract void reportReturnCode(int code);
 
+	public synchronized void reportException(String exceptionType) {
+		Integer count = exceptions.get(exceptionType);
+		if(count == null){
+			count = 0;
+		}
+		exceptions.put(exceptionType, ++count);
+	}
+	
 	public abstract void measure(int latency);
 
 	public abstract String getSummary();
@@ -79,12 +90,34 @@ public abstract class OneMeasurement implements Serializable, Cloneable {
 		}
 	}
 	
+	protected void combineExceptionMaps(HashMap<String, Integer> exceptions, HashMap<String, Integer> exceptionsNew) {
+		Set<String> keys = exceptionsNew.keySet();
+		for(String key : keys){
+			Integer valNew = exceptionsNew.get(key);
+			Integer val = valNew;
+			if(exceptions.containsKey(key)){
+				val = exceptions.get(key) + valNew;
+			}
+			exceptions.put(key, val);
+		}
+	}
+	
 	protected HashMap<Integer, int[]> cloneReturnCodeMap(HashMap<Integer, int[]> returncodes){
 		HashMap<Integer, int[]> clone = new HashMap<Integer, int[]>();
 		Set<Integer> keySet = returncodes.keySet();
 		for(int key : keySet){
 			int[] value = returncodes.get(key);
 			clone.put(key, value.clone());
+		}
+		return clone;
+	}
+	
+	protected HashMap<String, Integer> cloneExceptionMap(HashMap<String, Integer> exceptions){
+		HashMap<String, Integer> clone = new HashMap<String, Integer>();
+		Set<String> keySet = exceptions.keySet();
+		for(String key : keySet){
+			Integer value = exceptions.get(key);
+			clone.put(key, value);
 		}
 		return clone;
 	}

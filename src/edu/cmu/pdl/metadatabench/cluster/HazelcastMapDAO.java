@@ -48,7 +48,12 @@ public class HazelcastMapDAO implements INamespaceMapDAO {
 
 	@Override
 	public void deleteFile(long id) {
-		fileMap.remove(id);
+		fileMap.removeAsync(id);
+	}
+	
+	@Override
+	public void renameFile(long id, String pathNew){
+		fileMap.replace(id, pathNew);
 	}
 
 	@Override

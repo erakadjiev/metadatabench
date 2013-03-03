@@ -10,6 +10,7 @@ public interface INamespaceMapDAO {
 	public void createFile(long id, String path);
 	public String getFile(long id);
 	public void deleteFile(long id);
+	public void renameFile(long id, String pathNew);
 	public long getNumberOfFiles();
 	
 }

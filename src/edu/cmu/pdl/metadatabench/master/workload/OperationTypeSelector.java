@@ -32,7 +32,7 @@ public class OperationTypeSelector {
 			sumOfProbabilities += operationProbability;
 			cumulativeOperationTypeProbabilities.add(sumOfProbabilities);
 		}
-		//TODO: check if probabilities add up to 1 (or interpret them as weights)
+		//TODO: check if probabilities add up to 1 (for loop in getRandomOperationType fails otherwise)
 	}
 	
 	public FileSystemOperationType getRandomOperationType(){

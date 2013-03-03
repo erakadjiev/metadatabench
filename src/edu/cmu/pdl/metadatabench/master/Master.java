@@ -75,13 +75,31 @@ public class Master {
 			dispatcher.dispatch(new ProgressReset());
 			collectAndExportMeasurements(dispatcher);
 		}
+
+		try {
+			Thread.sleep(2500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		if(numberOfOperations > 0){
 			System.out.println("Workload generation started");
-			WorkloadGenerator wlGen = new WorkloadGenerator(dao, dispatcher, numberOfOperations, numberOfDirs, numberOfFiles);
+			long start = System.currentTimeMillis();
+			WorkloadGenerator wlGen = new WorkloadGenerator(dispatcher, numberOfOperations, numberOfDirs, numberOfFiles);
 			wlGen.generate();
-			System.out.println(dao.getNumberOfDirs());
-			System.out.println(dao.getNumberOfFiles());
+			long end = System.currentTimeMillis();
+			System.out.println(numberOfOperations + " operations generated in: " + (end-start)/1000.0);
+			try {
+				ProgressBarrier.awaitOperationCompletion(numberOfOperations);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			double creationTime = (System.currentTimeMillis()-start)/1000.0;
+			System.out.println("Workload done in: " + creationTime + " s");
+			System.out.println("Throughput: " + (numberOfOperations/creationTime) + " ops/s");
+			ProgressBarrier.reset();
+			dispatcher.dispatch(new ProgressReset());
+			collectAndExportMeasurements(dispatcher);
 		}
 	}
 	

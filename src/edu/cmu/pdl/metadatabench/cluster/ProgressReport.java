@@ -8,9 +8,9 @@ import edu.cmu.pdl.metadatabench.master.ProgressBarrier;
 public class ProgressReport implements Runnable, Serializable {
 
 	private int nodeId;
-	private int operationsDone;
+	private long operationsDone;
 	
-	public ProgressReport(int nodeId, int operationsDone) {
+	public ProgressReport(int nodeId, long operationsDone) {
 		this.nodeId = nodeId;
 		this.operationsDone = operationsDone;
 	}
@@ -19,7 +19,7 @@ public class ProgressReport implements Runnable, Serializable {
 		return nodeId;
 	}
 
-	public int getOperationsDone() {
+	public long getOperationsDone() {
 		return operationsDone;
 	}
 

@@ -69,7 +69,8 @@ public class HDFSClient implements IFileSystemClient {
 
 	@Override
 	public long move(String fromPath, String toPath) throws IOException {
-		throw new UnsupportedOperationException("HDFS has no explicit move operation. Use rename instead.");
+		// HDFS has no explicit move operation
+		return rename(fromPath, toPath);
 	}
 
 }
