@@ -6,11 +6,11 @@
 	<classpathentry kind="lib" path="lib/commons-configuration-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/guava-r09.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop-auth-0.23.1.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop-common-0.23.1.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop-hdfs-0.23.1.jar"/>
 	<classpathentry kind="lib" path="lib/protobuf-java-2.4.0a.jar"/>
 	<classpathentry kind="lib" path="lib/hazelcast-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/guava-14.0-rc3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

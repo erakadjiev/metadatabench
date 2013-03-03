@@ -38,7 +38,7 @@ public class HazelcastCluster implements ICluster {
 	@Override
 	public void joinAsSlave() {
 		System.clearProperty("hazelcast.lite.member");
-		Config config = new ClasspathXmlConfig("hazelcast-node.xml");
+		Config config = new ClasspathXmlConfig("hazelcast-slave.xml");
 		hazelcast = Hazelcast.newHazelcastInstance(config);
 	}
 	
