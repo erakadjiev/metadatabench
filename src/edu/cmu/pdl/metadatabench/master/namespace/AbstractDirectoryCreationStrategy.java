@@ -1,25 +1,26 @@
 package edu.cmu.pdl.metadatabench.master.namespace;
 
-import edu.cmu.pdl.metadatabench.cluster.CreateOperation;
-import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
 import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
-import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
-import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
+import edu.cmu.pdl.metadatabench.cluster.communication.IDispatcher;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.CreateOperation;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.SimpleOperation;
+import edu.cmu.pdl.metadatabench.common.Config;
+import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
 
 
 public abstract class AbstractDirectoryCreationStrategy {
 
-	protected static char PATH_SEPARATOR = '/';
-	protected static String DIR_NAME_PREFIX = PATH_SEPARATOR + "dir";
+	protected static char PATH_SEPARATOR = Config.getPathSeparator();
+	protected static String DIR_NAME_PREFIX = PATH_SEPARATOR + Config.getDirNamePrefix();
 	protected static final FileSystemOperationType MKDIR_TYPE = FileSystemOperationType.MKDIRS; 
 	
 	private String workingDirectory;
 	protected INamespaceMapDAO dao;
-	protected IOperationDispatcher dispatcher;
+	protected IDispatcher dispatcher;
 	
-	public AbstractDirectoryCreationStrategy(INamespaceMapDAO dao, IOperationDispatcher dispatcher, String workingDirectory){
+	public AbstractDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher, String workingDirectory){
 		this.workingDirectory = workingDirectory;
-		while(this.workingDirectory.endsWith("/")){
+		while(this.workingDirectory.endsWith(Character.toString(PATH_SEPARATOR))){
 			this.workingDirectory = this.workingDirectory.substring(0, this.workingDirectory.length() - 1);
 		}
 		this.dao = dao;

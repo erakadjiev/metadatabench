@@ -1,21 +1,22 @@
 package edu.cmu.pdl.metadatabench.master.namespace;
 
-import edu.cmu.pdl.metadatabench.cluster.CreateOperation;
-import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
-import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
-import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
+import edu.cmu.pdl.metadatabench.cluster.communication.IDispatcher;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.CreateOperation;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.SimpleOperation;
+import edu.cmu.pdl.metadatabench.common.Config;
+import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
 
 
 public abstract class AbstractFileCreationStrategy {
 
-	protected static final char PATH_SEPARATOR = '/';
-	protected static final String FILE_NAME_PREFIX = PATH_SEPARATOR + "file";
+	protected static final char PATH_SEPARATOR = Config.getPathSeparator();
+	protected static final String FILE_NAME_PREFIX = PATH_SEPARATOR + Config.getFileNamePrefix();
 	protected static final FileSystemOperationType CREATE_TYPE = FileSystemOperationType.CREATE; 
 	
 	protected long numberOfDirs;
-	protected IOperationDispatcher dispatcher;
+	protected IDispatcher dispatcher;
 	
-	public AbstractFileCreationStrategy(IOperationDispatcher dispatcher, long numberOfDirs){
+	public AbstractFileCreationStrategy(IDispatcher dispatcher, long numberOfDirs){
 		this.numberOfDirs = numberOfDirs;
 		this.dispatcher = dispatcher;
 	}

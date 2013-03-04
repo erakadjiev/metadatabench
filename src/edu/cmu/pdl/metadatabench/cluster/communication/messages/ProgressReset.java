@@ -1,9 +1,9 @@
-package edu.cmu.pdl.metadatabench.cluster;
+package edu.cmu.pdl.metadatabench.cluster.communication.messages;
 
 import java.io.Serializable;
 
-import edu.cmu.pdl.metadatabench.slave.Progress;
-import edu.cmu.pdl.metadatabench.slave.ProgressReporter;
+import edu.cmu.pdl.metadatabench.slave.progress.Progress;
+import edu.cmu.pdl.metadatabench.slave.progress.ProgressReporter;
 
 @SuppressWarnings("serial")
 public class ProgressReset implements Runnable, Serializable {

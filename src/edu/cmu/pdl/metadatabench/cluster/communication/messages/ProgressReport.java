@@ -1,8 +1,8 @@
-package edu.cmu.pdl.metadatabench.cluster;
+package edu.cmu.pdl.metadatabench.cluster.communication.messages;
 
 import java.io.Serializable;
 
-import edu.cmu.pdl.metadatabench.master.ProgressBarrier;
+import edu.cmu.pdl.metadatabench.master.progress.ProgressBarrier;
 
 @SuppressWarnings("serial")
 public class ProgressReport implements Runnable, Serializable {

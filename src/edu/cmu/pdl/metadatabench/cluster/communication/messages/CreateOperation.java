@@ -1,4 +1,6 @@
-package edu.cmu.pdl.metadatabench.cluster;
+package edu.cmu.pdl.metadatabench.cluster.communication.messages;
+
+import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
 
 @SuppressWarnings("serial")
 public class CreateOperation extends SimpleOperation {

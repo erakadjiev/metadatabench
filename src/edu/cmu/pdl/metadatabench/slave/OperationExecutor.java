@@ -3,9 +3,13 @@ package edu.cmu.pdl.metadatabench.slave;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
 import edu.cmu.pdl.metadatabench.measurement.Measurements;
 import edu.cmu.pdl.metadatabench.slave.fs.IFileSystemClient;
+import edu.cmu.pdl.metadatabench.slave.progress.Progress;
 
 public class OperationExecutor {
 
@@ -22,10 +26,13 @@ public class OperationExecutor {
 	private final ExecutorService threadPool;
 	private final Measurements measurements;
 	
+	private Logger log;
+	
 	public OperationExecutor(IFileSystemClient client, int threadCount){
 		this.client = client;
 		this.threadPool = Executors.newFixedThreadPool(threadCount);
 		this.measurements = Measurements.getMeasurements();
+		this.log = LoggerFactory.getLogger(OperationExecutor.class);
 	}
 	
 	public void create(final String path){
@@ -33,11 +40,11 @@ public class OperationExecutor {
 			@Override
 			public void run() {
 				try {
-					long runtime = client.create(path);
-					measurements.measure(CREATE_NAME, (int)runtime);
+					int runtime = client.create(path);
+					measurements.measure(CREATE_NAME, runtime);
 				} catch (Exception e) {
 					measurements.reportException(CREATE_NAME, e.getClass().getName());
-//					e.printStackTrace();
+					log.debug(CREATE_NAME + " operation cannot be executed", e);
 				} finally {
 					Progress.reportCompletedOperation();
 				}
@@ -51,11 +58,11 @@ public class OperationExecutor {
 			@Override
 			public void run() {
 				try {
-					long runtime = client.delete(path);
-					measurements.measure(DELETE_NAME, (int)runtime);
+					int runtime = client.delete(path);
+					measurements.measure(DELETE_NAME, runtime);
 				} catch (Exception e) {
-//					e.printStackTrace();
 					measurements.reportException(DELETE_NAME, e.getClass().getName());
+					log.debug(DELETE_NAME + " operation cannot be executed", e);
 				} finally {
 					Progress.reportCompletedOperation();
 				}
@@ -69,11 +76,11 @@ public class OperationExecutor {
 			@Override
 			public void run() {
 				try {
-					long runtime = client.listStatus(path);
-					measurements.measure(LIST_STATUS_FILE_NAME, (int)runtime);
+					int runtime = client.listStatus(path);
+					measurements.measure(LIST_STATUS_FILE_NAME, runtime);
 				} catch (Exception e) {
-//					e.printStackTrace();
 					measurements.reportException(LIST_STATUS_FILE_NAME, e.getClass().getName());
+					log.debug(LIST_STATUS_FILE_NAME + " operation cannot be executed", e);
 				} finally {
 					Progress.reportCompletedOperation();
 				}
@@ -87,11 +94,11 @@ public class OperationExecutor {
 			@Override
 			public void run() {
 				try {
-					long runtime = client.listStatus(path);
-					measurements.measure(LIST_STATUS_DIR_NAME, (int)runtime);
+					int runtime = client.listStatus(path);
+					measurements.measure(LIST_STATUS_DIR_NAME, runtime);
 				} catch (Exception e) {
-//					e.printStackTrace();
 					measurements.reportException(LIST_STATUS_DIR_NAME, e.getClass().getName());
+					log.debug(LIST_STATUS_DIR_NAME + " operation cannot be executed", e);
 				} finally {
 					Progress.reportCompletedOperation();
 				}
@@ -105,11 +112,11 @@ public class OperationExecutor {
 			@Override
 			public void run() {
 				try {
-					long runtime = client.mkdir(path);
-					measurements.measure(MKDIR_NAME, (int)runtime);
+					int runtime = client.mkdir(path);
+					measurements.measure(MKDIR_NAME, runtime);
 				} catch (Exception e) {
-//					e.printStackTrace();
 					measurements.reportException(MKDIR_NAME, e.getClass().getName());
+					log.debug(MKDIR_NAME + " operation cannot be executed", e);
 				} finally {
 					Progress.reportCompletedOperation();
 				}
@@ -123,11 +130,11 @@ public class OperationExecutor {
 			@Override
 			public void run() {
 				try {
-					long runtime = client.open(path);
-					measurements.measure(OPEN_NAME, (int)runtime);
+					int runtime = client.open(path);
+					measurements.measure(OPEN_NAME, runtime);
 				} catch (Exception e) {
-//					e.printStackTrace();
 					measurements.reportException(OPEN_NAME, e.getClass().getName());
+					log.debug(OPEN_NAME + " operation cannot be executed", e);
 				} finally {
 					Progress.reportCompletedOperation();
 				}
@@ -141,11 +148,11 @@ public class OperationExecutor {
 			@Override
 			public void run() {
 				try {
-					long runtime = client.rename(fromPath, toPath);
-					measurements.measure(RENAME_NAME, (int)runtime);
+					int runtime = client.rename(fromPath, toPath);
+					measurements.measure(RENAME_NAME, runtime);
 				} catch (Exception e) {
-//					e.printStackTrace();
 					measurements.reportException(RENAME_NAME, e.getClass().getName());
+					log.debug(RENAME_NAME + " operation cannot be executed", e);
 				} finally {
 					Progress.reportCompletedOperation();
 				}
@@ -159,11 +166,11 @@ public class OperationExecutor {
 			@Override
 			public void run() {
 				try {
-					long runtime = client.move(fromPath, toPath);
-					measurements.measure(MOVE_NAME, (int)runtime);
+					int runtime = client.move(fromPath, toPath);
+					measurements.measure(MOVE_NAME, runtime);
 				} catch (Exception e) {
-//					e.printStackTrace();
 					measurements.reportException(MOVE_NAME, e.getClass().getName());
+					log.debug(MOVE_NAME + " operation cannot be executed", e);
 				} finally {
 					Progress.reportCompletedOperation();
 				}

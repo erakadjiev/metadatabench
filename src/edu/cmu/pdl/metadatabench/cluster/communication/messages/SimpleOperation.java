@@ -1,12 +1,12 @@
-package edu.cmu.pdl.metadatabench.cluster;
+package edu.cmu.pdl.metadatabench.cluster.communication.messages;
 
 import java.io.Serializable;
-import java.util.concurrent.Callable;
 
+import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
 import edu.cmu.pdl.metadatabench.slave.Slave;
 
 @SuppressWarnings("serial")
-public class SimpleOperation implements Callable<Long>, Serializable {
+public class SimpleOperation implements Runnable, Serializable {
 
 	private FileSystemOperationType type;
 	private long targetId;
@@ -25,9 +25,8 @@ public class SimpleOperation implements Callable<Long>, Serializable {
 	}
 
 	@Override
-	public Long call() throws Exception {
+	public void run() {
 		Slave.getOperationHandler().handleOperation(this);
-		return null;
 	}
 	
 }

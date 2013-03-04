@@ -1,22 +1,28 @@
-package edu.cmu.pdl.metadatabench.slave;
+package edu.cmu.pdl.metadatabench.slave.progress;
 
-import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
-import edu.cmu.pdl.metadatabench.cluster.ProgressReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.cmu.pdl.metadatabench.cluster.communication.IDispatcher;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressReport;
 
 public class ProgressReporter implements Runnable {
 
 	private static int id;
-	private static IOperationDispatcher dispatcher;
+	private static IDispatcher dispatcher;
 	private static long reportFrequencyMillis;
 	private static long lastReportedNumber;
 	
 	private static volatile boolean stopFlag = false;
 	
-	public ProgressReporter(int nodeId, IOperationDispatcher dispatcher, long reportFrequencyMillis) {
+	private Logger log;
+	
+	public ProgressReporter(int nodeId, IDispatcher dispatcher, long reportFrequencyMillis) {
 		ProgressReporter.id = nodeId;
 		ProgressReporter.dispatcher = dispatcher;
 		ProgressReporter.reportFrequencyMillis = reportFrequencyMillis;
 		ProgressReporter.lastReportedNumber = 0;
+		this.log = LoggerFactory.getLogger(ProgressReporter.class);
 	}
 
 	@Override
@@ -24,14 +30,14 @@ public class ProgressReporter implements Runnable {
 		while(!stopFlag){
 			long ops = Progress.getOperationsDone();
 			if(ops > lastReportedNumber){
-				System.out.println(ops + " operations done");
+				log.debug("{} operations done", ops);
 				lastReportedNumber = ops;
 				dispatcher.dispatch(new ProgressReport(id, ops));
 			}
 			try {
 				Thread.sleep(reportFrequencyMillis);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				log.warn("Thread interrupted while sleeping", e);
 			}
 		}
 	}

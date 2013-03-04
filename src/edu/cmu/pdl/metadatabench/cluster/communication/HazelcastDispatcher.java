@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.cluster;
+package edu.cmu.pdl.metadatabench.cluster.communication;
 
 import java.util.Collection;
 import java.util.Set;
@@ -9,9 +9,16 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.Member;
 import com.hazelcast.core.MultiTask;
 
+import edu.cmu.pdl.metadatabench.cluster.HazelcastCluster;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.MeasurementsCollect;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.MeasurementsReset;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressFinished;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressReport;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressReset;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.SimpleOperation;
 import edu.cmu.pdl.metadatabench.measurement.MeasurementDataForNode;
 
-public class HazelcastDispatcher implements IOperationDispatcher {
+public class HazelcastDispatcher implements IDispatcher {
 
 	private static ExecutorService executorService;
 	private static Member master;
@@ -23,7 +30,7 @@ public class HazelcastDispatcher implements IOperationDispatcher {
 
 	@Override
 	public void dispatch(SimpleOperation operation) {
-		executorService.execute(new DistributedTask<Long>(operation, operation.getTargetId()));
+		executorService.execute(new DistributedTask<Boolean>(operation, true, operation.getTargetId()));
 	}
 
 	@Override

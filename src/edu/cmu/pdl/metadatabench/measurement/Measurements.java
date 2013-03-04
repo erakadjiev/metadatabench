@@ -22,8 +22,13 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
 import com.yahoo.ycsb.measurements.reporter.Reporter;
+
+import edu.cmu.pdl.metadatabench.common.Config;
 
 /**
  * Collects latency measurements, and reports them when requested.
@@ -35,7 +40,7 @@ public class Measurements{
 	public static final String MEASUREMENT_TYPE = "measurementtype";
 	private static final String MEASUREMENT_TYPE_DEFAULT = "histogram";
 	public static final String MEASUREMENT_WARM_UP = "measurementwarmup";
-	public static final String MEASUREMENT_WARM_UP_DEFAULT = "0";
+	private static final String MEASUREMENT_WARM_UP_TIME_DEFAULT = String.valueOf(Config.getMeasurementWarmUpTime());
 
 	static Measurements singleton = null;
 	static Properties measurementproperties = null;
@@ -62,6 +67,8 @@ public class Measurements{
 	private boolean warmUpDone;
 	
 	private Properties _props;
+	
+	private Logger log;
 
 	/**
 	 * Create a new object with the specified properties.
@@ -71,7 +78,7 @@ public class Measurements{
 
 		_props = props;
 
-		warmUpTime = Integer.parseInt(_props.getProperty(MEASUREMENT_WARM_UP, MEASUREMENT_WARM_UP_DEFAULT));
+		warmUpTime = Integer.parseInt(_props.getProperty(MEASUREMENT_WARM_UP, MEASUREMENT_WARM_UP_TIME_DEFAULT));
 		firstMeasurementTimeStamp = 0;
 		warmUpDone = (warmUpTime == 0) ? true : false;
 		
@@ -80,6 +87,8 @@ public class Measurements{
 		} else {
 			histogram = false;
 		}
+		
+		this.log = LoggerFactory.getLogger(Measurements.class);
 	}
 
 	OneMeasurement constructOneMeasurement(String name) {
@@ -104,11 +113,11 @@ public class Measurements{
 		if(!warmUpDone){
 			long now = System.currentTimeMillis();
 			if(firstMeasurementTimeStamp == 0){
-				System.out.println("Will start measurements in " + warmUpTime/1000 + " seconds (warm-up time)");
+				log.info("Will start measurements in {} seconds (warm-up time)", warmUpTime/1000);
 				firstMeasurementTimeStamp = now;
 			} else if((now - firstMeasurementTimeStamp) > warmUpTime){
 				warmUpDone = true;
-				System.out.println("Warm-up done, starting measurements.");
+				log.info("Warm-up done, starting measurements.");
 				doMeasurement(operation, latency);
 			}
 		} else {
@@ -121,9 +130,7 @@ public class Measurements{
 		try {
 			data.get(operation).measure(latency);
 		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
-			System.out.println("ERROR: java.lang.ArrayIndexOutOfBoundsException - ignoring and continuing");
-			e.printStackTrace();
-			e.printStackTrace(System.out);
+			log.debug("ERROR: java.lang.ArrayIndexOutOfBoundsException - ignoring and continuing", e);
 		}
 	}
 	

@@ -4,18 +4,12 @@ import java.io.IOException;
 
 public interface IFileSystemClient {
 
-	public long create(String path) throws IOException;
-
-	public long delete(String path) throws IOException;
-
-	public long listStatus(String path) throws IOException;
-
-	public long mkdir(String path) throws IOException;
-
-	public long open(String path) throws IOException;
-
-	public long rename(String fromPath, String toPath) throws IOException;
-
-	public long move(String fromPath, String toPath) throws IOException;
+	public int create(String path) throws IOException;
+	public int delete(String path) throws IOException;
+	public int listStatus(String path) throws IOException;
+	public int mkdir(String path) throws IOException;
+	public int open(String path) throws IOException;
+	public int rename(String fromPath, String toPath) throws IOException;
+	public int move(String fromPath, String toPath) throws IOException;
 	
 }

@@ -1,10 +1,14 @@
-package edu.cmu.pdl.metadatabench.slave;
+package edu.cmu.pdl.metadatabench.slave.progress;
 
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Progress {
 
 	private static AtomicLong ops = new AtomicLong();
+	private static Logger log = LoggerFactory.getLogger(Progress.class);
 	
 	public static void reportCompletedOperation(){
 		ops.incrementAndGet();
@@ -15,7 +19,7 @@ public class Progress {
 	}
 	
 	public static void reset(){
-		System.out.println("All operations done.");
+		log.debug("All operations done");
 		ops.set(0L);
 	}
 	

@@ -2,13 +2,13 @@ package edu.cmu.pdl.metadatabench.master.namespace;
 
 import com.yahoo.ycsb.generator.ZipfianGenerator;
 
-import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
+import edu.cmu.pdl.metadatabench.cluster.communication.IDispatcher;
 
 public class ZipfianFileCreationStrategy extends AbstractFileCreationStrategy {
 
 	private ZipfianGenerator randomGenerator;
 	
-	public ZipfianFileCreationStrategy(IOperationDispatcher dispatcher, long numberOfDirs){
+	public ZipfianFileCreationStrategy(IDispatcher dispatcher, long numberOfDirs){
 		super(dispatcher, numberOfDirs);
 		randomGenerator = new ZipfianGenerator(numberOfDirs);
 	}

@@ -1,26 +1,32 @@
 package edu.cmu.pdl.metadatabench.slave;
 
-import edu.cmu.pdl.metadatabench.cluster.CreateOperation;
-import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
-import edu.cmu.pdl.metadatabench.cluster.MoveOperation;
-import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.CreateOperation;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.MoveOperation;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.SimpleOperation;
+import edu.cmu.pdl.metadatabench.common.Config;
+import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
 
 public class OperationHandler {
 
-	private static char PATH_SEPARATOR = '/';
-	private static String RENAME_SUFFIX = ".r";
+	private static char PATH_SEPARATOR = Config.getPathSeparator();
+	private static String RENAME_SUFFIX = Config.getWorkloadRenameSuffix();
 	
 	private OperationExecutor executor;
 	private INamespaceMapDAO dao;
 	
+	private Logger log;
+	
 	public OperationHandler(OperationExecutor executor, INamespaceMapDAO dao){
 		this.executor = executor;
 		this.dao = dao;
+		this.log = LoggerFactory.getLogger(OperationHandler.class);
 	};
 	
 	public void handleOperation(SimpleOperation op){
-		//TODO: extract into abstract class
 		FileSystemOperationType type = op.getType();
 		long targetId = op.getTargetId();
 		switch(type){
@@ -28,7 +34,7 @@ public class OperationHandler {
 				if(op instanceof CreateOperation){
 					create(targetId, ((CreateOperation)op).getId(), ((CreateOperation)op).getName());
 				} else {
-					System.out.println("\"CREATE\" operation type has to have a CreateOperation object");;
+					log.warn("Error: {} operation type has to have a CreateOperation object", FileSystemOperationType.CREATE.getName());
 				}
 				break;
 			case MKDIRS:
@@ -57,11 +63,11 @@ public class OperationHandler {
 				if(op instanceof MoveOperation){
 					moveFile(targetId, ((MoveOperation)op).getParentIdNew());
 				} else {
-					System.out.println("\"MOVE\" operation type has to have a MoveOperation object");
+					log.warn("Error: {} operation type has to have a MoveOperation object", FileSystemOperationType.MOVE_FILE.getName());
 				}
 				break;
 			default:
-				System.out.println("Unknown operation");
+				log.warn("Error: Unknown operation type received");
 		}
 	}
 	

@@ -23,7 +23,12 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
+
+import edu.cmu.pdl.metadatabench.common.Config;
 
 /**
  * Take measurements and maintain a histogram of a given metric, such as READ
@@ -35,7 +40,7 @@ import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
 @SuppressWarnings("serial")
 public class OneMeasurementHistogram extends OneMeasurement {
 	public static final String BUCKETS = "histogram.buckets";
-	public static final String BUCKETS_DEFAULT = "1000";
+	public static final String BUCKETS_DEFAULT = String.valueOf(Config.getMeasurementHistogramBuckets());
 
 	int _buckets;
 	int[] histogram;
@@ -50,6 +55,8 @@ public class OneMeasurementHistogram extends OneMeasurement {
 	int min;
 	int max;
 	HashMap<Integer, int[]> returncodes;
+	
+	private Logger log;
 
 	public OneMeasurementHistogram(String name, Properties props) {
 		super(name);
@@ -63,6 +70,7 @@ public class OneMeasurementHistogram extends OneMeasurement {
 		min = -1;
 		max = -1;
 		returncodes = new HashMap<Integer, int[]>();
+		log = LoggerFactory.getLogger(OneMeasurementHistogram.class);
 	}
 
 	/*
@@ -170,7 +178,7 @@ public class OneMeasurementHistogram extends OneMeasurement {
 	public void addMeasurement(OneMeasurement measurement) {
 		OneMeasurementHistogram measurementHistogram = (OneMeasurementHistogram) measurement;
 		if(_buckets != measurementHistogram._buckets){
-			System.err.println("Error: Measurement cannot be added, because the two histograms have a different number of buckets.");
+			log.error("Error: Measurement cannot be added, because the two histograms have a different number of buckets.");
 		} else{
 			combineHistogramArrays(histogram, measurementHistogram.histogram);
 			histogramoverflow += measurementHistogram.histogramoverflow;
@@ -193,7 +201,7 @@ public class OneMeasurementHistogram extends OneMeasurement {
 	private void combineHistogramArrays(int[] histogram, int[] histogramNew){
 		int length = histogram.length;
 		if(length != histogramNew.length){
-			System.err.println("Error: The two histogram arrays have a different size.");
+			log.error("Error: Cannot combine the two histogram arrays, because they have a different size.");
 		} else {
 			for(int i = 0; i < length ; i++){
 				histogram[i] += histogramNew[i];

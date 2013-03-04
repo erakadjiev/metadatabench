@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.cluster;
+package edu.cmu.pdl.metadatabench.cluster.communication.messages;
 
 import java.io.Serializable;
 

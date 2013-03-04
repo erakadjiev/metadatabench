@@ -69,6 +69,9 @@
         <max-pool-size>64</max-pool-size>
         <keep-alive-seconds>60</keep-alive-seconds>
     </executor-service>
+    <properties>
+    	<property name="hazelcast.logging.type">slf4j</property>
+    </properties>
     <map name="directories">
         <!--
             Number of backups. If 1 is set as the backup-count for example,

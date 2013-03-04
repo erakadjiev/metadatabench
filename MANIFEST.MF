@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: edu.cmu.pdl.metadatabench.Benchmark
-Class-Path: hazelacst-master.xml hazelcast-slave.xml lib/hazelcast-2.5.jar lib/ycsb.jar lib/commons-configuration-1.6.jar lib/commons-lang-2.5.jar lib/commons-logging-1.1.1.jar lib/guava-14.0-rc3.jar lib/hadoop-auth-0.23.1.jar lib/hadoop-common-0.23.1.jar lib/hadoop-hdfs-0.23.1.jar lib/protobuf-java-2.4.0a.jar
+Class-Path: hazelacst-master.xml hazelcast-slave.xml logback.xml lib/hazelcast-2.5.jar lib/ycsb.jar lib/commons-configuration-1.6.jar lib/commons-lang-2.5.jar lib/commons-logging-1.1.1.jar lib/guava-14.0-rc3.jar lib/hadoop-auth-0.23.1.jar lib/hadoop-common-0.23.1.jar lib/hadoop-hdfs-0.23.1.jar lib/protobuf-java-2.4.0a.jar lib/slf4j-api-1.7.2.jar lib/logback-classic-1.0.9.jar lib/logback-core-1.0.9.jar
 

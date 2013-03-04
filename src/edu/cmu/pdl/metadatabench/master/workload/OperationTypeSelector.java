@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
+import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
 
 public class OperationTypeSelector {
 
@@ -32,7 +32,6 @@ public class OperationTypeSelector {
 			sumOfProbabilities += operationProbability;
 			cumulativeOperationTypeProbabilities.add(sumOfProbabilities);
 		}
-		//TODO: check if probabilities add up to 1 (for loop in getRandomOperationType fails otherwise)
 	}
 	
 	public FileSystemOperationType getRandomOperationType(){

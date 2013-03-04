@@ -1,46 +1,38 @@
 package edu.cmu.pdl.metadatabench.master.workload;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import edu.cmu.pdl.metadatabench.cluster.CreateOperation;
-import edu.cmu.pdl.metadatabench.cluster.FileSystemOperationType;
-import edu.cmu.pdl.metadatabench.cluster.IOperationDispatcher;
-import edu.cmu.pdl.metadatabench.cluster.MoveOperation;
-import edu.cmu.pdl.metadatabench.cluster.SimpleOperation;
-import edu.cmu.pdl.metadatabench.master.IdCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.cmu.pdl.metadatabench.cluster.communication.IDispatcher;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.CreateOperation;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.MoveOperation;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.SimpleOperation;
+import edu.cmu.pdl.metadatabench.common.Config;
+import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
 
 public class WorkloadGenerator {
 
-	//TODO: params
-	private static final int DELETED_FILE_SET_MAX_SIZE = 100000;
-	private static final int ACCESSED_ELEMENT_CACHE_MAX_SIZE = 110000;
-	private static final long ACCESSED_ELEMENT_CACHE_TTL = 5000;
-	private static final int THROTTLE_AFTER_ITERATIONS = 100000;
-	private static final int THROTTLE_MILLIS = 15000;
+	private static final int DELETED_FILE_SET_MAX_SIZE = Config.getWorkloadDeletedFileSetMaxSize();
+	private static final int ACCESSED_ELEMENT_CACHE_MAX_SIZE = Config.getWorkloadAccessedElementCacheMaxSize();
+	private static final long ACCESSED_ELEMENT_CACHE_TTL = Config.getWorkloadAccessedElementCacheTTL();
+	private static final int THROTTLE_AFTER_ITERATIONS = Config.getWorkloadThrottleAfterIterations();
+	private static final int THROTTLE_MILLIS = Config.getWorkloadThrottleMillis();
 	
-	protected static char PATH_SEPARATOR = '/';
-	private static String DIR_NAME_PREFIX = PATH_SEPARATOR + "dir";
-	private static String FILE_NAME_PREFIX = PATH_SEPARATOR + "file";
+	protected static char PATH_SEPARATOR = Config.getPathSeparator();
+	private static String DIR_NAME_PREFIX = PATH_SEPARATOR + Config.getDirNamePrefix();
+	private static String FILE_NAME_PREFIX = PATH_SEPARATOR + Config.getFileNamePrefix();
 	
 	private int numberOfOperations;
-	public static final Map<FileSystemOperationType,Double> OPERATION_PROBABILITIES = new HashMap<FileSystemOperationType,Double>();
-	static{
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.LIST_STATUS_FILE, 0.4);
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.LIST_STATUS_DIR, 0.05);
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.OPEN_FILE, 0.35);
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.CREATE, 0.05);
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.RENAME_FILE, 0.05);
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.MOVE_FILE, 0.05);
-		OPERATION_PROBABILITIES.put(FileSystemOperationType.DELETE_FILE, 0.05);
-	}
+	private static final Map<FileSystemOperationType,Double> OPERATION_PROBABILITIES = Config.getWorkloadOperationProbabilities();
 	
 	private long numberOfDirs;
 	private long numberOfFiles;
-	private IOperationDispatcher dispatcher;
+	private IDispatcher dispatcher;
 	private OperationTypeSelector operationTypeSelector;
 	private DirectoryAndFileSelector randomSelector;
 	
@@ -50,7 +42,9 @@ public class WorkloadGenerator {
 	private Set<Long> deletedFileIds;
 	private IdCache accessedElementIdCache;
 	
-	public WorkloadGenerator(IOperationDispatcher dispatcher, int numberOfOperations, long numberOfDirs, long numberOfFiles){
+	private Logger log;
+	
+	public WorkloadGenerator(IDispatcher dispatcher, int numberOfOperations, long numberOfDirs, long numberOfFiles){
 		this.numberOfOperations = numberOfOperations;
 		this.numberOfDirs = numberOfDirs;
 		this.numberOfFiles = numberOfFiles;
@@ -59,7 +53,6 @@ public class WorkloadGenerator {
 		this.randomSelector = new DirectoryAndFileSelector(numberOfDirs, numberOfFiles);
 		
 		filesReadOnlyWorkload = isFilesReadOnlyWorkload();
-		System.out.println("files read only: " + filesReadOnlyWorkload);
 		dirsReadOnlyWorkload = isDirsReadOnlyWorkload();
 		int deleteOps = getNumberOfOperations(FileSystemOperationType.DELETE_FILE);
 		int createOps = getNumberOfOperations(FileSystemOperationType.CREATE);
@@ -70,6 +63,8 @@ public class WorkloadGenerator {
 			this.deletedFileIds = new LinkedHashSet<Long>();
 		}
 		this.accessedElementIdCache = new IdCache(ACCESSED_ELEMENT_CACHE_MAX_SIZE, ACCESSED_ELEMENT_CACHE_TTL);
+		
+		log = LoggerFactory.getLogger(WorkloadGenerator.class);
 	}
 	
 	private int getNumberOfOperations(FileSystemOperationType type){
@@ -148,28 +143,47 @@ public class WorkloadGenerator {
 					moveFile();
 					break;
 				default:
-					System.out.println("Invalid operation generated");
+					log.warn("Internal error: Invalid operation type generated");
 			}
 			if((i % THROTTLE_AFTER_ITERATIONS) == 0){
 				throttle();
 			}
 		}
-		System.out.println("create: " + create);
-		System.out.println("mkdir: " + mkdir);
-		System.out.println("delete: " + delete);
-		System.out.println("lsfile: " + lsfile);
-		System.out.println("lsdir: " + lsdir);
-		System.out.println("open: " + open);
-		System.out.println("rename: " + rename);
-		System.out.println("move: " + move);
+		StringBuilder sb = new StringBuilder();
+		sb.append("Number of each operation type in generated workload:");
+		sb.append("\n");
+		sb.append("create: ");
+		sb.append(create);
+		sb.append("\n");
+		sb.append("mkdir: ");
+		sb.append(mkdir);
+		sb.append("\n");
+		sb.append("delete: ");
+		sb.append(delete);
+		sb.append("\n");
+		sb.append("lsfile: ");
+		sb.append(lsfile);
+		sb.append("\n");
+		sb.append("lsdir: ");
+		sb.append(lsdir);
+		sb.append("\n");
+		sb.append("open: ");
+		sb.append(open);
+		sb.append("\n");
+		sb.append("rename: ");
+		sb.append(rename);
+		sb.append("\n");
+		sb.append("move: ");
+		sb.append(move);
+		log.debug(sb.toString());
 	}
 	
 	private void throttle(){
 		try {
-			System.out.println("Going to sleep for " + THROTTLE_MILLIS);
+			log.debug("Going to sleep for {} ms", THROTTLE_MILLIS);
 			Thread.sleep(THROTTLE_MILLIS);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			log.warn("Thread was interrupted while sleeping", e);
 		}
 	}
 	
@@ -190,7 +204,7 @@ public class WorkloadGenerator {
 		long id = randomSelector.getRandomFile(numberOfFiles);
 		while(deletedFileIds.contains(id) || accessedElementIdCache.containsFileId(id)){
 			if(deletedFileIds.size() >= numberOfFiles){
-				System.out.println("Fatal error: All files have been deleted.");
+				log.error("Error: All files have been deleted while executing the workload.");
 				System.exit(0);
 			}
 			id = randomSelector.getRandomFile(numberOfFiles);

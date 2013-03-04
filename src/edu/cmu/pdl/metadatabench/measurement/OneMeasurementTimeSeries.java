@@ -25,7 +25,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
+
+import edu.cmu.pdl.metadatabench.common.Config;
 
 @SuppressWarnings("serial")
 class SeriesUnit implements Serializable, Cloneable {
@@ -56,8 +61,7 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 	 * this granularity. Units are milliseconds.
 	 */
 	public static final String GRANULARITY = "timeseries.granularity";
-
-	public static final String GRANULARITY_DEFAULT = "1000";
+	public static final String GRANULARITY_DEFAULT = String.valueOf(Config.getMeasurementTimeSeriesGranularity());
 
 	int _granularity;
 	Vector<SeriesUnit> _measurements;
@@ -78,11 +82,14 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 
 	private HashMap<Integer, int[]> returncodes;
 
+	private Logger log;
+	
 	public OneMeasurementTimeSeries(String name, Properties props) {
 		super(name);
 		_granularity = Integer.parseInt(props.getProperty(GRANULARITY, GRANULARITY_DEFAULT));
 		_measurements = new Vector<SeriesUnit>();
 		returncodes = new HashMap<Integer, int[]>();
+		log = LoggerFactory.getLogger(OneMeasurementTimeSeries.class);
 	}
 
 	void checkEndOfUnit(boolean forceend) {
@@ -112,8 +119,8 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 		if(unitNumber < size){
 			SeriesUnit su = _measurements.get((int)unitNumber-1);
 			if(unit != su.time){
-				System.err.println("Error during time series measurement. Time step mismatch with existing measurement unit)");
-				System.err.println("At position " + unitNumber + " " + unit + " does not equal " + su.time);
+				log.error("Error during time series measurement. Time step mismatch with existing measurement unit)");
+				log.debug("At position {} {} does not equal {}", unitNumber, unit, su.time);
 			}
 			su.average = (su.average + avg) / 2;
 		} else {
@@ -207,7 +214,7 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 	public void addMeasurement(OneMeasurement measurement) {
 		OneMeasurementTimeSeries measurementTS = (OneMeasurementTimeSeries) measurement;
 		if(_granularity != measurementTS._granularity){
-			System.err.println("Error: Measurement cannot be added, because the two time series have a different granularity.");
+			log.error("Error: Measurement cannot be added, because the two time series have a different granularity.");
 		} else{
 			combineTimeSeriesVectors(_measurements, measurementTS._measurements);
 			count += measurementTS.count;
@@ -244,7 +251,7 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 				try {
 					vector.add(unitNew.clone());
 				} catch (CloneNotSupportedException e) {
-					e.printStackTrace();
+					log.warn("Time series vector cannot be cloned, storing original object. Some measurement data may get overwritten.");
 					vector.add(unitNew);
 				}
 			}

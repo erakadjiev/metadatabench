@@ -12,5 +12,8 @@
 	<classpathentry kind="lib" path="lib/protobuf-java-2.4.0a.jar"/>
 	<classpathentry kind="lib" path="lib/hazelcast-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/guava-14.0-rc3.jar"/>
+	<classpathentry kind="lib" path="lib/logback-classic-1.0.9.jar"/>
+	<classpathentry kind="lib" path="lib/logback-core-1.0.9.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

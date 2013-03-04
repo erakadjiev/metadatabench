@@ -1,4 +1,4 @@
-package edu.cmu.pdl.metadatabench.master;
+package edu.cmu.pdl.metadatabench.master.workload;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
