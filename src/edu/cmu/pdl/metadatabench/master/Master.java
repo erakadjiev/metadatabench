@@ -43,14 +43,14 @@ public class Master {
 	
 	private static Logger log = LoggerFactory.getLogger(Master.class);
 
-	public static void start(HazelcastInstance hazelcast, int id, int masters, int numberOfDirs, int numberOfFiles, int numberOfOperations){
+	public static void start(HazelcastInstance hazelcast, int id, int numberOfDirs, int numberOfFiles, int numberOfOperations){
 		
 		INamespaceMapDAO dao = new HazelcastMapDAO(hazelcast);
 		IDispatcher dispatcher = new HazelcastDispatcher(hazelcast);
 		
-		AbstractDirectoryCreationStrategy dirCreator = new BarabasiAlbertDirectoryCreationStrategy(dao, dispatcher, masters);
+		AbstractDirectoryCreationStrategy dirCreator = new BarabasiAlbertDirectoryCreationStrategy(dao, dispatcher);
 		AbstractFileCreationStrategy fileCreator = new ZipfianFileCreationStrategy(dispatcher, numberOfDirs);
-		NamespaceGenerator nsGen = new NamespaceGenerator(dirCreator, fileCreator, id, masters);
+		NamespaceGenerator nsGen = new NamespaceGenerator(dirCreator, fileCreator, id);
 		
 		Map<String,Double> overallMeasurements = new LinkedHashMap<String,Double>();
 		

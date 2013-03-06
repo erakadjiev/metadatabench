@@ -8,21 +8,15 @@ import edu.cmu.pdl.metadatabench.cluster.communication.IDispatcher;
 public class UniformDirectoryCreationStrategy extends AbstractDirectoryCreationStrategy {
 
 	private Random randomId;
-	private int masters;
 	
-	public UniformDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher, int masters) {
+	public UniformDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher) {
 		super(dao, dispatcher);
 		randomId = new Random();
-		this.masters = masters;
 	}
 
 	@Override
 	public long selectParentDirectory(int i) {
-		int from = i;
-		if(i > (masters)){
-			from = i - ((i-1) % masters);
-		}
-		int key = randomId.nextInt(from-1) + 1;
+		int key = randomId.nextInt(i-1) + 1;
 		return (long) key;
 	}
 

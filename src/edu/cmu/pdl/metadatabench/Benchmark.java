@@ -149,7 +149,7 @@ public class Benchmark {
 				log.info("All members joined the cluster. Starting the generation.");
 				
 				int id = cluster.generateMasterId();
-				Master.start(((HazelcastCluster)cluster).getHazelcast(), id, MASTERS, numberOfDirs, numberOfFiles, numberOfOperations);
+				Master.start(((HazelcastCluster)cluster).getHazelcast(), id, numberOfDirs, numberOfFiles, numberOfOperations);
 			} else if(cmdLine.hasOption(OPT_SLAVE)){
 				
 				String fsAddress = null;

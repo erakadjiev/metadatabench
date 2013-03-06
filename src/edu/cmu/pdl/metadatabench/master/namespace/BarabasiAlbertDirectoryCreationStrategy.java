@@ -11,13 +11,11 @@ public class BarabasiAlbertDirectoryCreationStrategy extends AbstractDirectoryCr
 
 	private Random randomId;
 	private Random randomParent;
-	private int masters;
 
-	public BarabasiAlbertDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher, int masters){
+	public BarabasiAlbertDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher){
 		super(dao, dispatcher);
 		randomId = new Random();
 		randomParent = new Random();
-		this.masters = masters;
 	}
 	
 	@Override
@@ -30,11 +28,7 @@ public class BarabasiAlbertDirectoryCreationStrategy extends AbstractDirectoryCr
 	}
 	
 	public long selectParentDirectory(int i){
-		int from = i;
-		if(i > (masters)){
-			from = i - ((i-1) % masters);
-		}
-		int key = randomId.nextInt(from-1) + 1;
+		int key = randomId.nextInt(i-1) + 1;
 		return (long)key;
 	}
 	
