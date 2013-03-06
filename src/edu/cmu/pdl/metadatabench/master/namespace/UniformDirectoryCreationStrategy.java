@@ -10,12 +10,8 @@ public class UniformDirectoryCreationStrategy extends AbstractDirectoryCreationS
 	private Random randomId;
 	private int masters;
 	
-	public UniformDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher, int masters){
-		this(dao, dispatcher, "", masters);
-	}
-	
-	public UniformDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher, String workingDirectory, int masters) {
-		super(dao, dispatcher, workingDirectory);
+	public UniformDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher, int masters) {
+		super(dao, dispatcher);
 		randomId = new Random();
 		this.masters = masters;
 	}

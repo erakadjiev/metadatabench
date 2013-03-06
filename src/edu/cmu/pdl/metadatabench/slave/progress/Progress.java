@@ -19,7 +19,7 @@ public class Progress {
 	}
 	
 	public static void reset(){
-		log.debug("All operations done");
+		log.info("All operations done");
 		ops.set(0L);
 	}
 	

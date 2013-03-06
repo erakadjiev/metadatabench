@@ -14,11 +14,7 @@ public class BarabasiAlbertDirectoryCreationStrategy extends AbstractDirectoryCr
 	private int masters;
 
 	public BarabasiAlbertDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher, int masters){
-		this(dao, dispatcher, "", masters);
-	}
-	
-	public BarabasiAlbertDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher, String workingDirectory, int masters){
-		super(dao, dispatcher, workingDirectory);
+		super(dao, dispatcher);
 		randomId = new Random();
 		randomParent = new Random();
 		this.masters = masters;

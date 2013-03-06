@@ -41,6 +41,9 @@ public class OperationExecutor {
 			public void run() {
 				try {
 					int runtime = client.create(path);
+					if(runtime > 10000){
+						log.debug("File creation took too long: {}", path);
+					}
 					measurements.measure(CREATE_NAME, runtime);
 				} catch (Exception e) {
 					measurements.reportException(CREATE_NAME, e.getClass().getName());

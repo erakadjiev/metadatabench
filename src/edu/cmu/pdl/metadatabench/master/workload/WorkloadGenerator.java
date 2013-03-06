@@ -17,11 +17,10 @@ import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
 
 public class WorkloadGenerator {
 
-	private static final int DELETED_FILE_SET_MAX_SIZE = Config.getWorkloadDeletedFileSetMaxSize();
 	private static final int ACCESSED_ELEMENT_CACHE_MAX_SIZE = Config.getWorkloadAccessedElementCacheMaxSize();
 	private static final long ACCESSED_ELEMENT_CACHE_TTL = Config.getWorkloadAccessedElementCacheTTL();
 	private static final int THROTTLE_AFTER_ITERATIONS = Config.getWorkloadThrottleAfterIterations();
-	private static final int THROTTLE_MILLIS = Config.getWorkloadThrottleMillis();
+	private static final int THROTTLE_DURATION = Config.getWorkloadThrottleDuration();
 	
 	protected static char PATH_SEPARATOR = Config.getPathSeparator();
 	private static String DIR_NAME_PREFIX = PATH_SEPARATOR + Config.getDirNamePrefix();
@@ -57,8 +56,7 @@ public class WorkloadGenerator {
 		int deleteOps = getNumberOfOperations(FileSystemOperationType.DELETE_FILE);
 		int createOps = getNumberOfOperations(FileSystemOperationType.CREATE);
 		if(deleteOps > createOps){
-			int initialCapacity = Math.max(deleteOps - createOps, DELETED_FILE_SET_MAX_SIZE);
-			this.deletedFileIds = new LinkedHashSet<Long>((int)(initialCapacity / (5 * 0.75)));
+			this.deletedFileIds = new LinkedHashSet<Long>((int)(deleteOps / (5 * 0.75)));
 		} else {
 			this.deletedFileIds = new LinkedHashSet<Long>();
 		}
@@ -180,8 +178,8 @@ public class WorkloadGenerator {
 	
 	private void throttle(){
 		try {
-			log.debug("Going to sleep for {} ms", THROTTLE_MILLIS);
-			Thread.sleep(THROTTLE_MILLIS);
+			log.debug("Going to sleep for {} ms", THROTTLE_DURATION);
+			Thread.sleep(THROTTLE_DURATION);
 		} catch (InterruptedException e) {
 			log.warn("Thread was interrupted while sleeping", e);
 		}

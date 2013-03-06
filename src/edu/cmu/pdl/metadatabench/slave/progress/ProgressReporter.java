@@ -30,7 +30,7 @@ public class ProgressReporter implements Runnable {
 		while(!stopFlag){
 			long ops = Progress.getOperationsDone();
 			if(ops > lastReportedNumber){
-				log.debug("{} operations done", ops);
+				log.info("{} operations done", ops);
 				lastReportedNumber = ops;
 				dispatcher.dispatch(new ProgressReport(id, ops));
 			}

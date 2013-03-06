@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
+
 public class MeasurementDataCollection {
 	
 	public static MeasurementDataCollection instance;
@@ -56,15 +58,15 @@ public class MeasurementDataCollection {
 		return dataPerNode;
 	}
 	
-	public void exportMeasurements(MeasurementsExporterExt exporter) throws IOException {
-		exporter.write("Exporting measurements collected from " + dataPerNode.size() + " nodes");
+	public void exportMeasurements(MeasurementsExporter exporter) throws IOException {
+		exporter.write("OVERALL", "Number of slaves", dataPerNode.size());
 		dataAggregate.exportMeasurements(exporter);
 	}
 	
-	public void exportMeasurementsPerNode(MeasurementsExporterExt exporter) throws IOException {
+	public void exportMeasurementsPerNode(MeasurementsExporter exporter) throws IOException {
 		Set<Integer> nodeIds = dataPerNode.keySet();
 		for(int nodeId : nodeIds){
-			exporter.write("Measurements for node " + nodeId);
+			exporter.write("OVERALL", "Node number", nodeId);
 			dataPerNode.get(nodeId).exportMeasurements(exporter);
 		}
 	}

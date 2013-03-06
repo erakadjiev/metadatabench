@@ -20,7 +20,7 @@ public class Slave{
 	private static OperationExecutor executor;
 	private static OperationHandler handler;
 	
-	public static void start(HazelcastInstance hazelcast, int id) {
+	public static void start(HazelcastInstance hazelcast, int id, String fileSystemAddress) {
 		Properties props = new Properties();
 		props.setProperty(Measurements.MEASUREMENT_TYPE, "histogram");
 		props.setProperty(Measurements.MEASUREMENT_WARM_UP, MEASUREMENT_WARM_UP_TIME);
@@ -29,7 +29,7 @@ public class Slave{
 		props.setProperty("nodeId", Integer.toString(id));
 		Measurements.setProperties(props);
 		
-		executor = new OperationExecutor(new HDFSClient(), THREADS);
+		executor = new OperationExecutor(new HDFSClient(fileSystemAddress), THREADS);
 		handler = new OperationHandler(executor, new HazelcastMapDAO(hazelcast));
 		
 		new Thread(new ProgressReporter(id, new HazelcastDispatcher(hazelcast), REPORT_FREQUENCY)).start();

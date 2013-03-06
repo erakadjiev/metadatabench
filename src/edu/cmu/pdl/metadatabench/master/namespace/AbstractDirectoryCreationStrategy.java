@@ -18,8 +18,8 @@ public abstract class AbstractDirectoryCreationStrategy {
 	protected INamespaceMapDAO dao;
 	protected IDispatcher dispatcher;
 	
-	public AbstractDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher, String workingDirectory){
-		this.workingDirectory = workingDirectory;
+	public AbstractDirectoryCreationStrategy(INamespaceMapDAO dao, IDispatcher dispatcher){
+		this.workingDirectory = Config.getWorkingDir();
 		while(this.workingDirectory.endsWith(Character.toString(PATH_SEPARATOR))){
 			this.workingDirectory = this.workingDirectory.substring(0, this.workingDirectory.length() - 1);
 		}

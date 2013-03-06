@@ -13,9 +13,11 @@ public class HDFSClientOld implements IFileSystemClient {
 
 	private FileSystem fileSystem;
 	
-	public HDFSClientOld(){
+	public HDFSClientOld(String fileSystemAddress){
 		try {
-			fileSystem = FileSystem.get(new Configuration());
+			Configuration conf = new Configuration();
+			conf.set("fs.default.name", fileSystemAddress);
+			fileSystem = FileSystem.get(conf);
 		} catch (IOException e) {
 			LoggerFactory.getLogger(HDFSClientOld.class).error("Cannot initialize the file system", e);
 		}

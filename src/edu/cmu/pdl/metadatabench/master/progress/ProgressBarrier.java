@@ -16,6 +16,7 @@ public class ProgressBarrier {
 	
 	private static final Logger log = LoggerFactory.getLogger(ProgressBarrier.class);
 	
+	// TODO: implement timeout
 	public static void awaitOperationCompletion(long numberOfOperations) throws InterruptedException{
 		if(sumOfOperations() < numberOfOperations){
 			operationsNeeded = numberOfOperations;
@@ -26,7 +27,7 @@ public class ProgressBarrier {
 	public static synchronized void reportCompletedOperations(int nodeId, long operationsDone){
 		operationsDonePerNode.put(nodeId, operationsDone);
 		int opsSum = sumOfOperations();
-		log.debug("{} operations done", opsSum);
+		log.info("{} operations done", opsSum);
 		if(opsSum == operationsNeeded){
 			latch.countDown();
 		}

@@ -71,6 +71,11 @@
     </executor-service>
     <properties>
     	<property name="hazelcast.logging.type">slf4j</property>
+    	<property name="hazelcast.heartbeat.interval.seconds">30</property>
+    	<property name="hazelcast.max.no.heartbeat.seconds">3600</property>
+    	<property name="hazelcast.master.confirmation.interval.seconds">60</property>
+    	<property name="hazelcast.max.no.master.confirmation.seconds">5000</property>
+    	<property name="hazelcast.member.list.publish.interval.seconds">1200</property>
     </properties>
     <map name="directories">
         <!--

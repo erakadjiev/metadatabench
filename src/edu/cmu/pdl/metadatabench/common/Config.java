@@ -5,16 +5,22 @@ import java.util.Map;
 
 public class Config {
 
+	private static int numberOfSlaves = -1;
+	private static int numberOfDirs = -1;
+	private static int numberOfFiles = -1;
+	private static int numberOfOps = -1;
+	private static String fileSystemAddress = null;
+	
 	private static char pathSeparator = '/';
+	private static String workingDir = "/workDir";
 	private static String dirNamePrefix = "dir";
 	private static String fileNamePrefix = "file";
 	private static String workloadRenameSuffix = ".r";
 	private static Map<FileSystemOperationType,Double> workloadOperationProbabilities = new HashMap<FileSystemOperationType,Double>();
-	private static int workloadDeletedFileSetMaxSize = 100000;
 	private static int workloadAccessedElementCacheMaxSize = 110000;
 	private static long workloadAccessedElementCacheTTL = 5000;
 	private static int workloadThrottleAfterIterations = 100000;
-	private static int workloadThrottleMillis = 15000;
+	private static int workloadThrottleDuration = 15000;
 	private static int measurementWarmUpTime = 0;
 	private static int measurementHistogramBuckets = 1000;
 	private static int measurementTimeSeriesGranularity = 1000;
@@ -22,13 +28,53 @@ public class Config {
 	private static int slaveProgressReportFrequencyMillis = 2500;
 
 	static{
+		workloadOperationProbabilities.put(FileSystemOperationType.CREATE, 0.05);
+		workloadOperationProbabilities.put(FileSystemOperationType.DELETE_FILE, 0.05);
 		workloadOperationProbabilities.put(FileSystemOperationType.LIST_STATUS_FILE, 0.4);
 		workloadOperationProbabilities.put(FileSystemOperationType.LIST_STATUS_DIR, 0.05);
 		workloadOperationProbabilities.put(FileSystemOperationType.OPEN_FILE, 0.35);
-		workloadOperationProbabilities.put(FileSystemOperationType.CREATE, 0.05);
 		workloadOperationProbabilities.put(FileSystemOperationType.RENAME_FILE, 0.05);
 		workloadOperationProbabilities.put(FileSystemOperationType.MOVE_FILE, 0.05);
-		workloadOperationProbabilities.put(FileSystemOperationType.DELETE_FILE, 0.05);
+	}
+
+	public static int getNumberOfSlaves() {
+		return numberOfSlaves;
+	}
+
+	public static void setNumberOfSlaves(int numberOfSlaves) {
+		Config.numberOfSlaves = numberOfSlaves;
+	}
+
+	public static int getNumberOfDirs() {
+		return numberOfDirs;
+	}
+
+	public static void setNumberOfDirs(int numberOfDirs) {
+		Config.numberOfDirs = numberOfDirs;
+	}
+
+	public static int getNumberOfFiles() {
+		return numberOfFiles;
+	}
+
+	public static void setNumberOfFiles(int numberOfFiles) {
+		Config.numberOfFiles = numberOfFiles;
+	}
+
+	public static int getNumberOfOps() {
+		return numberOfOps;
+	}
+
+	public static void setNumberOfOps(int numberOfOps) {
+		Config.numberOfOps = numberOfOps;
+	}
+
+	public static String getFileSystemAddress() {
+		return fileSystemAddress;
+	}
+
+	public static void setFileSystemAddress(String fileSystemAddress) {
+		Config.fileSystemAddress = fileSystemAddress;
 	}
 
 	public static char getPathSeparator() {
@@ -37,6 +83,14 @@ public class Config {
 
 	public static void setPathSeparator(char pathSeparator) {
 		Config.pathSeparator = pathSeparator;
+	}
+	
+	public static String getWorkingDir() {
+		return workingDir;
+	}
+
+	public static void setWorkingDir(String workDir) {
+		Config.workingDir = workDir;
 	}
 
 	public static String getDirNamePrefix() {
@@ -72,15 +126,6 @@ public class Config {
 		Config.workloadOperationProbabilities = workloadOperationProbabilities;
 	}
 
-	public static int getWorkloadDeletedFileSetMaxSize() {
-		return workloadDeletedFileSetMaxSize;
-	}
-
-	public static void setWorkloadDeletedFileSetMaxSize(
-			int workloadDeletedFileSetMaxSize) {
-		Config.workloadDeletedFileSetMaxSize = workloadDeletedFileSetMaxSize;
-	}
-
 	public static int getWorkloadAccessedElementCacheMaxSize() {
 		return workloadAccessedElementCacheMaxSize;
 	}
@@ -108,12 +153,12 @@ public class Config {
 		Config.workloadThrottleAfterIterations = workloadThrottleAfterIterations;
 	}
 
-	public static int getWorkloadThrottleMillis() {
-		return workloadThrottleMillis;
+	public static int getWorkloadThrottleDuration() {
+		return workloadThrottleDuration;
 	}
 
-	public static void setWorkloadThrottleMillis(int workloadThrottleMillis) {
-		Config.workloadThrottleMillis = workloadThrottleMillis;
+	public static void setWorkloadThrottleDuration(int workloadThrottleDuration) {
+		Config.workloadThrottleDuration = workloadThrottleDuration;
 	}
 
 	public static int getMeasurementWarmUpTime() {

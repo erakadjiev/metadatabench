@@ -2,7 +2,7 @@
 	<timestamp key="ts" datePattern="yyyyMMdd-HHmmss"/>
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>metadatabench-${ts}.log</file>
+		<file>log/metadatabench-${ts}.log</file>
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
 		</encoder>
@@ -14,7 +14,7 @@
 		</encoder>
 	</appender>
 
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
 	</root>

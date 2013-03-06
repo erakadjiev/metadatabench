@@ -15,10 +15,11 @@ public class HDFSClient implements IFileSystemClient {
 
 	private FileContext fileContext;
 	
-	public HDFSClient(){
+	public HDFSClient(String fileSystemAddress){
 		try {
-//			fileContext = FileContext.getFileContext(new Path("hdfs://localhost:9000").toUri());
-			fileContext = FileContext.getFileContext(new Configuration());
+			Configuration conf = new Configuration();
+			conf.set("fs.defaultFS", fileSystemAddress);
+			fileContext = FileContext.getFileContext(conf);
 		} catch (IOException e) {
 			LoggerFactory.getLogger(HDFSClient.class).error("Cannot initialize the file system", e);
 		}
