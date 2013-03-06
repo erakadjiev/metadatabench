@@ -30,7 +30,8 @@ public class ConfigLoader {
 	private static final String WORKLOAD_RENAME_SUFFIX = 					"master.workload.renamesuffix";
 	private static final String WORKLOAD_ACCESSED_ELEMENT_CACHE_MAX_SIZE = 	"master.workload.accessedelementcache.maxsize";
 	private static final String WORKLOAD_ACCESSED_ELEMENT_CACHE_TTL = 		"master.workload.accessedelementcache.ttl";
-	private static final String WORKLOAD_THROTTLE_AFTER_ITERATIONS = 		"master.workload.throttle.afteriterations";
+	private static final String WORKLOAD_THROTTLE_AFTER_GENERATED_OPS =		"master.workload.throttle.aftergeneratedops";
+	private static final String WORKLOAD_THROTTLE_CONTINUE_THRESHOLD =		"master.workload.throttle.continuethreshold";
 	private static final String WORKLOAD_THROTTLE_DURATION = 				"master.workload.throttle.duration";
 
 	private static final String WORKLOAD_CREATE_PROBABILITY =				"master.workload.operation.create";
@@ -211,22 +212,37 @@ public class ConfigLoader {
 					log.debug("Failed parsing config parameter value", e);
 				}
 				
-			} else if(WORKLOAD_THROTTLE_AFTER_ITERATIONS.equalsIgnoreCase(prop)){
+			} else if(WORKLOAD_THROTTLE_AFTER_GENERATED_OPS.equalsIgnoreCase(prop)){
 				
 				try{
-					int iterations = Integer.parseInt(value);
-					if(iterations < 1){
+					int ops = Integer.parseInt(value);
+					if(ops < 1){
 						log.warn("Value for config parameter {} must be a positive integer", prop);
 					} else {
 						log.debug("Set config parameter {} to {}", prop, value);
-						Config.setWorkloadThrottleAfterIterations(iterations);
+						Config.setWorkloadThrottleAfterGeneratedOps(ops);
 					}
 				} catch(NumberFormatException e){
 					log.warn("Value for config parameter {} must be a positive integer", prop);
 					log.debug("Failed parsing config parameter value", e);
 				}
 				
-			} else if(WORKLOAD_THROTTLE_DURATION.equalsIgnoreCase(prop)){
+			} else if(WORKLOAD_THROTTLE_CONTINUE_THRESHOLD.equalsIgnoreCase(prop)){
+				
+				try{
+					int threshold = Integer.parseInt(value);
+					if(threshold < 0){
+						log.warn("Value for config parameter {} must be a positive integer or 0", prop);
+					} else {
+						log.debug("Set config parameter {} to {}", prop, value);
+						Config.setWorkloadThrottleContinueThreshold(threshold);
+					}
+				} catch(NumberFormatException e){
+					log.warn("Value for config parameter {} must be a positive integer or 0", prop);
+					log.debug("Failed parsing config parameter value", e);
+				}
+				
+			}  else if(WORKLOAD_THROTTLE_DURATION.equalsIgnoreCase(prop)){
 				
 				try{
 					int duration = Integer.parseInt(value);

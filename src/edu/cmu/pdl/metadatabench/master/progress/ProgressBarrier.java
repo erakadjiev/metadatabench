@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 public class ProgressBarrier {
 
 	private static Map<Integer,Long> operationsDonePerNode = new ConcurrentHashMap<Integer,Long>();
+	private static long operationsDoneTotal;
 	private static long operationsNeeded;
 	private static CountDownLatch latch = new CountDownLatch(1);
 	
@@ -27,10 +28,15 @@ public class ProgressBarrier {
 	public static synchronized void reportCompletedOperations(int nodeId, long operationsDone){
 		operationsDonePerNode.put(nodeId, operationsDone);
 		int opsSum = sumOfOperations();
+		operationsDoneTotal = opsSum;
 		log.info("{} operations done", opsSum);
 		if(opsSum == operationsNeeded){
 			latch.countDown();
 		}
+	}
+	
+	public static long getOperationsDone(){
+		return operationsDoneTotal;
 	}
 	
 	private static int sumOfOperations(){
@@ -44,6 +50,7 @@ public class ProgressBarrier {
 	
 	public static void reset(){
 		operationsDonePerNode = new ConcurrentHashMap<Integer,Long>();
+		operationsDoneTotal = 0;
 		operationsNeeded = 0;
 		latch = new CountDownLatch(1);
 	}

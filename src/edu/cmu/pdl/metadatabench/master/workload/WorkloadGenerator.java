@@ -14,13 +14,12 @@ import edu.cmu.pdl.metadatabench.cluster.communication.messages.MoveOperation;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.SimpleOperation;
 import edu.cmu.pdl.metadatabench.common.Config;
 import edu.cmu.pdl.metadatabench.common.FileSystemOperationType;
+import edu.cmu.pdl.metadatabench.master.progress.Throttler;
 
 public class WorkloadGenerator {
 
 	private static final int ACCESSED_ELEMENT_CACHE_MAX_SIZE = Config.getWorkloadAccessedElementCacheMaxSize();
 	private static final long ACCESSED_ELEMENT_CACHE_TTL = Config.getWorkloadAccessedElementCacheTTL();
-	private static final int THROTTLE_AFTER_ITERATIONS = Config.getWorkloadThrottleAfterIterations();
-	private static final int THROTTLE_DURATION = Config.getWorkloadThrottleDuration();
 	
 	protected static char PATH_SEPARATOR = Config.getPathSeparator();
 	private static String DIR_NAME_PREFIX = PATH_SEPARATOR + Config.getDirNamePrefix();
@@ -143,9 +142,7 @@ public class WorkloadGenerator {
 				default:
 					log.warn("Internal error: Invalid operation type generated");
 			}
-			if((i % THROTTLE_AFTER_ITERATIONS) == 0){
-				throttle();
-			}
+			Throttler.throttle(i);
 		}
 		StringBuilder sb = new StringBuilder();
 		sb.append("Number of each operation type in generated workload:");
@@ -174,15 +171,6 @@ public class WorkloadGenerator {
 		sb.append("move: ");
 		sb.append(move);
 		log.debug(sb.toString());
-	}
-	
-	private void throttle(){
-		try {
-			log.debug("Going to sleep for {} ms", THROTTLE_DURATION);
-			Thread.sleep(THROTTLE_DURATION);
-		} catch (InterruptedException e) {
-			log.warn("Thread was interrupted while sleeping", e);
-		}
 	}
 	
 	private long getNewFileId(){

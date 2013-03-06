@@ -19,8 +19,9 @@ public class Config {
 	private static Map<FileSystemOperationType,Double> workloadOperationProbabilities = new HashMap<FileSystemOperationType,Double>();
 	private static int workloadAccessedElementCacheMaxSize = 110000;
 	private static long workloadAccessedElementCacheTTL = 5000;
-	private static int workloadThrottleAfterIterations = 100000;
-	private static int workloadThrottleDuration = 15000;
+	private static int workloadThrottleAfterGeneratedOps = 100000;
+	private static int workloadThrottleContinueThreshold = 2000;
+	private static int workloadThrottleDuration = 900;
 	private static int measurementWarmUpTime = 0;
 	private static int measurementHistogramBuckets = 1000;
 	private static int measurementTimeSeriesGranularity = 1000;
@@ -144,13 +145,22 @@ public class Config {
 		Config.workloadAccessedElementCacheTTL = workloadAccessedElementCacheTTL;
 	}
 
-	public static int getWorkloadThrottleAfterIterations() {
-		return workloadThrottleAfterIterations;
+	public static int getWorkloadThrottleAfterGeneratedOps() {
+		return workloadThrottleAfterGeneratedOps;
 	}
 
-	public static void setWorkloadThrottleAfterIterations(
-			int workloadThrottleAfterIterations) {
-		Config.workloadThrottleAfterIterations = workloadThrottleAfterIterations;
+	public static void setWorkloadThrottleAfterGeneratedOps(
+			int workloadThrottleAfterGeneratedOps) {
+		Config.workloadThrottleAfterGeneratedOps = workloadThrottleAfterGeneratedOps;
+	}
+
+	public static int getWorkloadThrottleContinueThreshold() {
+		return workloadThrottleContinueThreshold;
+	}
+
+	public static void setWorkloadThrottleContinueThreshold(
+			int workloadThrottleContinueThreshold) {
+		Config.workloadThrottleContinueThreshold = workloadThrottleContinueThreshold;
 	}
 
 	public static int getWorkloadThrottleDuration() {
