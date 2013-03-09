@@ -21,7 +21,7 @@ public class HDFSClientOld implements IFileSystemClient {
 	private FileSystem fileSystem;
 	
 	/**
-	 * @param fileSystemAddress The address of the name node @see edu.cmu.pdl.metadatabench.common.Config#getFileSystemAddress()
+	 * @param fileSystemAddress The address of the NameNode @see edu.cmu.pdl.metadatabench.common.Config#getFileSystemAddress()
 	 */
 	public HDFSClientOld(String fileSystemAddress){
 		try {

@@ -135,7 +135,7 @@ public class Master {
 		}
 		
 		// collect namespace creation measurements from slaves and export them 
-		collectAndExportMeasurements(dispatcher, "namespace", overallMeasurements);
+		collectExportAndResetMeasurements(dispatcher, "namespace", overallMeasurements);
 		
 		if(numberOfOperations > 0){
 			// reset overall measurements before starting the workload generation
@@ -173,18 +173,19 @@ public class Master {
 			ProgressMonitor.reset();
 			dispatcher.dispatch(new ProgressReset());
 			// collect workload measurements from slaves and export them 
-			collectAndExportMeasurements(dispatcher, "workload", overallMeasurements);
+			collectExportAndResetMeasurements(dispatcher, "workload", overallMeasurements);
 		}
 	}
 	
 	/**
+	 * Collects measurements from slaves, exports the combined measurements and resets the local and remote 
+	 * measurement data
 	 * 
-	 * 
-	 * @param dispatcher
-	 * @param generationStepName
-	 * @param overallMeasurements
+	 * @param dispatcher The dispatcher used to send messages to other nodes
+	 * @param generationStepName Name of the generation phase (namespace or workload)
+	 * @param overallMeasurements The overall measurements (runtime, throughput)
 	 */
-	private static void collectAndExportMeasurements(IDispatcher dispatcher, String generationStepName, Map<String,Double> overallMeasurements){
+	private static void collectExportAndResetMeasurements(IDispatcher dispatcher, String generationStepName, Map<String,Double> overallMeasurements){
 		MeasurementDataCollection measurements = collectMeasurements(dispatcher);
 		String measurementString = getAndExportMeasurementText(measurements, overallMeasurements);
 		exportMeasurementTextToFile(measurementString, generationStepName);
@@ -194,7 +195,7 @@ public class Master {
 	}
 
 	/**
-	 * Collects and aggregates measurements from slaves
+	 * Collects measurements from slaves
 	 * 
 	 * @param dispatcher The dispatcher used to send messages to other nodes
 	 * @return The combined measurements from all slaves

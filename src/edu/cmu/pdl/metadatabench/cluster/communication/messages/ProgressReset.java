@@ -6,8 +6,8 @@ import edu.cmu.pdl.metadatabench.slave.progress.Progress;
 import edu.cmu.pdl.metadatabench.slave.progress.ProgressReporter;
 
 /**
- * A message notifying the slaves that a generation step (directory creation, file creation or workload) 
- * has been completed and they should reset their progress.
+ * A message notifying a slave that a generation step (directory creation, file creation or workload) 
+ * has been completed and it should reset its progress.
  * 
  * @author emil.rakadjiev
  *

@@ -3,7 +3,7 @@ package edu.cmu.pdl.metadatabench.measurement;
 import java.util.HashMap;
 
 /**
- * {@link edu.cmu.pdl.metadatabench.measurement.MeasurementData} including a id of the node where the measurements 
+ * {@link edu.cmu.pdl.metadatabench.measurement.MeasurementData} including the id of the node where the measurements 
  * were recorded.
  * @author emil.rakadjiev
  *

@@ -5,8 +5,8 @@ import java.io.Serializable;
 import edu.cmu.pdl.metadatabench.measurement.Measurements;
 
 /**
- * A message notifying the slaves that a generation step (directory creation, file creation or workload) 
- * has been completed and they should reset their measurements.
+ * A message notifying a slave that a generation step (directory creation, file creation or workload) 
+ * has been completed and it should reset its measurements.
  * 
  * @author emil.rakadjiev
  *

@@ -3,7 +3,7 @@ package edu.cmu.pdl.metadatabench.slave.fs;
 import java.io.IOException;
 
 /**
- * A dummy file system client, used for testing purposes. It does not access any file system, 
+ * A dummy file system client used for testing purposes. It does not access any file system, 
  * its methods just return a default value.
  * 
  * @author emil.rakadjiev

@@ -7,7 +7,7 @@ import edu.cmu.pdl.metadatabench.measurement.MeasurementDataForNode;
 import edu.cmu.pdl.metadatabench.measurement.Measurements;
 
 /**
- * A task that collects the measurements from a slave and returns it to the master
+ * A task that collects the measurements from a slave and returns them to the master
  * 
  * @author emil.rakadjiev
  *
