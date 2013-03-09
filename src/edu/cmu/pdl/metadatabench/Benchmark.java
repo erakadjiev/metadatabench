@@ -23,11 +23,23 @@ import edu.cmu.pdl.metadatabench.common.ConfigLoader;
 import edu.cmu.pdl.metadatabench.master.Master;
 import edu.cmu.pdl.metadatabench.slave.Slave;
 
+/**
+ * A distributed metadata benchmark targeting distributed file systems with scalable metadata servers. 
+ * Generates a namespace (directories and files) and subsequently executes a workload consisting of 
+ * various metadata operations on the namespace elements. Runtime, throughput and the latency of the 
+ * single file system operations are measured and reported.
+ * 
+ * This class parses the command line parameters and starts the generation.
+ * 
+ * @author emil.rakadjiev
+ *
+ */
 public class Benchmark {
 
 	// TODO: implement possibility to run multiple masters in parallel
 	private static final int MASTERS = 1;
 	
+	/* Names of command line parameters */
 	private static final String OPT_MASTER = "master";
 	private static final String OPT_SLAVES = "slaves";
 	private static final String OPT_DIRS = "dirs";
@@ -39,8 +51,16 @@ public class Benchmark {
 	private static final String OPT_CONFIG = "config";
 	private static final String OPT_HELP = "help";
 	
+	/* Time to wait between given events */
 	private static final int SLEEP_TIME = 2000;
 	
+	/**
+	 * Used for sorting the command line parameters, when they are listed on the 
+	 * command line parameter help page.
+	 * 
+	 * @author emil.rakadjiev
+	 *
+	 */
 	private static class OptionComarator implements Comparator<Option> {
 
 	    private static final List<String> OPTS_ORDER = new ArrayList<String>(9);
@@ -81,9 +101,11 @@ public class Benchmark {
 		if(cmdLine != null){
 			ICluster cluster = HazelcastCluster.getInstance();
 			if(cmdLine.hasOption(OPT_CONFIG)){
+				// if a config file has been specified explicitly, load it 
 				String configPath = cmdLine.getOptionValue(OPT_CONFIG);
 				ConfigLoader.loadConfig(configPath);
 			} else {
+				// otherwise try to load config from standard location or if not possible, load defaults
 				ConfigLoader.loadConfig();
 			}
 			if(cmdLine.hasOption(OPT_MASTER)){
@@ -95,6 +117,7 @@ public class Benchmark {
 				if(cmdLine.hasOption(OPT_SLAVES)){
 					numberOfSlaves = Integer.parseInt(cmdLine.getOptionValue(OPT_SLAVES));
 				} else {
+					// this is a required parameter and has to be specified either on the command line or in the config file
 					numberOfSlaves = Config.getNumberOfSlaves();
 					if(numberOfSlaves < 1){
 						log.error("Slaves parameter required for master");
@@ -106,6 +129,7 @@ public class Benchmark {
 				if(cmdLine.hasOption(OPT_DIRS)){
 					numberOfDirs = Integer.parseInt(cmdLine.getOptionValue(OPT_DIRS));
 				} else {
+					// this is a required parameter and has to be specified either on the command line or in the config file
 					numberOfDirs = Config.getNumberOfDirs();
 					if(numberOfDirs < 1){
 						log.error("Dirs parameter required for master");
@@ -156,6 +180,7 @@ public class Benchmark {
 				if(cmdLine.hasOption(OPT_FS_ADDRESS)){
 					fsAddress = cmdLine.getOptionValue(OPT_FS_ADDRESS);
 				} else {
+					// this is a required parameter and has to be specified either on the command line or in the config file
 					fsAddress = Config.getFileSystemAddress();
 					if(fsAddress == null){
 						log.error("Fs parameter required for slave");
@@ -169,6 +194,8 @@ public class Benchmark {
 				Slave.start(((HazelcastCluster)cluster).getHazelcast(), id, fsAddress);
 			} else if(cmdLine.hasOption(OPT_STOP)){
 				cluster.stop();
+			} else if(cmdLine.hasOption(OPT_HELP)){
+				printUsage(options);
 			}
 		} else {
 			log.error("Invalid command line parameters");
@@ -177,6 +204,9 @@ public class Benchmark {
 		}
 	}
 
+	/**
+	 * Initializes all command line parameters
+	 */
 	private static Options initOptions(){
 		OptionBuilder.hasArg(false);
 		OptionBuilder.isRequired(false);
@@ -186,13 +216,13 @@ public class Benchmark {
 		OptionBuilder.hasArg();
 		OptionBuilder.withArgName("numberOfSlaves");
 		OptionBuilder.isRequired(false);
-		OptionBuilder.withDescription("Number of slave nodes (master waits until all have joined the cluster). Applicable only for master.");
+		OptionBuilder.withDescription("Number of slave nodes (master waits until all have joined the cluster). Applicable only for master. Required parameter either on command line or in config file.");
 		Option slaves = OptionBuilder.create(OPT_SLAVES);
 		
 		OptionBuilder.hasArg();
 		OptionBuilder.withArgName("numberOfDirs");
 		OptionBuilder.isRequired(false);
-		OptionBuilder.withDescription("Number of dirs to generate. Applicable only for master.");
+		OptionBuilder.withDescription("Number of dirs to generate. Applicable only for master. Required parameter either on command line or in config file.");
 		Option dirs = OptionBuilder.create(OPT_DIRS);
 		
 		OptionBuilder.hasArg();
@@ -216,13 +246,13 @@ public class Benchmark {
 		OptionBuilder.withArgName("fileSystemAddress");
 		OptionBuilder.isRequired(false);
 		OptionBuilder.withDescription("Address of the file system server. E.g. for HDFS this is the value of the fs.default.name " +
-				"or fs.defaultFS parameter as defined in core-site.xml, using the format hdfs://host.name:port/.");
+				"or fs.defaultFS parameter as defined in core-site.xml, using the format hdfs://host.name:port/.  Required parameter either on command line or in config file.");
 		Option fsAddress = OptionBuilder.create(OPT_FS_ADDRESS);
 		
 		OptionBuilder.hasArg(false);
 		OptionBuilder.isRequired(false);
 		OptionBuilder.withDescription("Tries to stop all the nodes on the current machine. " +
-				"Sometimes only manually killing of respective Java process helps.");
+				"Sometimes only manually killing the respective Java process helps.");
 		Option stop = OptionBuilder.create(OPT_STOP); 
 		
 		OptionBuilder.hasArg(false);
@@ -255,10 +285,14 @@ public class Benchmark {
 		return options;
 	}
 	
+	/**
+	 * Prints the help page for the command line parameters
+	 * @param options Contains all the command line options (parameters) for the application 
+	 */
 	private static void printUsage(Options options) {
 		HelpFormatter help = new HelpFormatter();
 		help.setOptionComparator(new OptionComarator());
-		help.printHelp("\t\t\tmetadatabench -master -slaves NUM -dirs NUM [-files NUM] [-ops NUM] [-config PATH] or\nmetadatabench -slave -fs ADDR [-config PATH] or\nmetadatabench -stop or\nmetadatabench -help", options);
+		help.printHelp("\t\t\tmetadatabench -master [-slaves NUM] [-dirs NUM] [-files NUM] [-ops NUM] [-config PATH] or\nmetadatabench -slave [-fs ADDR] [-config PATH] or\nmetadatabench -stop or\nmetadatabench -help", options);
 	}
 	
 }

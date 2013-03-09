@@ -33,12 +33,19 @@ import edu.cmu.pdl.metadatabench.common.Config;
 /**
  * Collects latency measurements, and reports them when requested.
  * 
+ * Changes to YCSB class: added warm-up time, added reporting of exceptions, 
+ * added method to get raw measurement data, further smaller refactorings.
+ * 
  * @author cooperb
+ * @author emil.rakadjiev
  * 
  */
 public class Measurements{
+	/** @see edu.cmu.pdl.metadatabench.common.Config#isMeasurementHistogram() */
 	public static final String MEASUREMENT_TYPE = "measurementtype";
-	private static final String MEASUREMENT_TYPE_DEFAULT = "histogram";
+	public static final String MEASUREMENT_TYPE_HISTOGRAM = "histogram";
+	public static final String MEASUREMENT_TYPE_TIMESERIES = "timeseries";
+	/** @see edu.cmu.pdl.metadatabench.common.Config#getMeasurementWarmUpTime() */
 	public static final String MEASUREMENT_WARM_UP = "measurementwarmup";
 	private static final String MEASUREMENT_WARM_UP_TIME_DEFAULT = String.valueOf(Config.getMeasurementWarmUpTime());
 
@@ -82,7 +89,7 @@ public class Measurements{
 		firstMeasurementTimeStamp = 0;
 		warmUpDone = (warmUpTime == 0) ? true : false;
 		
-		if (_props.getProperty(MEASUREMENT_TYPE, MEASUREMENT_TYPE_DEFAULT).compareTo("histogram") == 0) {
+		if (_props.getProperty(MEASUREMENT_TYPE, MEASUREMENT_TYPE_HISTOGRAM).compareTo("histogram") == 0) {
 			histogram = true;
 		} else {
 			histogram = false;
@@ -99,6 +106,9 @@ public class Measurements{
 		}
 	}
 
+	/**
+	 * Resets the measurement data
+	 */
 	public void cleanMeasurement() {
 		data = new HashMap<String, OneMeasurement>();
 		firstMeasurementTimeStamp = 0;
@@ -108,6 +118,8 @@ public class Measurements{
 	/**
 	 * Report a single value of a single metric. E.g. for read latency,
 	 * operation="READ" and latency is the measured value.
+	 * 
+	 * Change to original method: added warm-up time, when measurements are ignored.
 	 */
 	public synchronized void measure(String operation, int latency) {
 		if(!warmUpDone){
@@ -142,6 +154,12 @@ public class Measurements{
 		data.get(operation).reportReturnCode(code);
 	}
 	
+	/**
+	 * Reports a failed operation
+	 * 
+	 * @param operation The name of the operation that has failed
+	 * @param exceptionType The name of the exception that has occured
+	 */
 	public void reportException(String operation, String exceptionType) {
 		initOperation(operation);
 		data.get(operation).reportException(exceptionType);
@@ -177,10 +195,18 @@ public class Measurements{
 		return ret;
 	}
 	
+	/**
+	 * Gets the raw measurements data
+	 * @return The raw measurement data
+	 */
 	public MeasurementData getMeasurementData(){
 		return new MeasurementData(data, histogram);
 	}
 	
+	/**
+	 * Gets the raw measurements data including the id of this node
+	 * @return The raw measurement data including the id of this node
+	 */
 	public MeasurementDataForNode getMeasurementDataForNode(){
 		int nodeId = 0;
 		String prop = _props.getProperty("nodeId");

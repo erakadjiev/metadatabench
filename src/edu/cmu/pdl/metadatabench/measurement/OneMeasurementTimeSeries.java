@@ -53,6 +53,9 @@ class SeriesUnit implements Serializable, Cloneable {
 
 /**
  * A time series measurement of a metric, such as READ LATENCY.
+ * 
+ * Changes to original YCSB class: added support recording of exceptions, added support for adding 
+ * measurement data from another measurement, added cloning of measurement object. 
  */
 @SuppressWarnings("serial")
 public class OneMeasurementTimeSeries extends OneMeasurement {
@@ -210,6 +213,9 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 		return "[" + getName() + " AverageLatency(ms)=" + d.format(report) + "]";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addMeasurement(OneMeasurement measurement) {
 		OneMeasurementTimeSeries measurementTS = (OneMeasurementTimeSeries) measurement;
@@ -237,6 +243,12 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 		
 	}
 
+	/**
+	 * Merges two time series vectors
+	 * 
+	 * @param vector The original time series vector that will be kept
+	 * @param vectorNew The new time series vector whose data will be merged into the original vector
+	 */
 	private void combineTimeSeriesVectors(Vector<SeriesUnit> vector, Vector<SeriesUnit> vectorNew) {
 		int size = vector.size();
 		int sizeNew = vectorNew.size();
@@ -258,6 +270,10 @@ public class OneMeasurementTimeSeries extends OneMeasurement {
 		}
 	}
 	
+	/**
+	 * Deep-clones this measurement
+	 * @return the cloned measurement
+	 */
 	public OneMeasurementTimeSeries clone() throws CloneNotSupportedException {
 		OneMeasurementTimeSeries clone = (OneMeasurementTimeSeries) super.clone();
 		clone._measurements = new Vector<SeriesUnit>();

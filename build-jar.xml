@@ -3,7 +3,7 @@
 <!-- compiled class files have to be in the bin folder -->
 <project name="metadatabench" default="jar" basedir=".">
 	<target name="jar">
-	    <jar destfile="/home/rakadjiev/benchmark/metadatabench.jar" manifest="MANIFEST.MF">
+	    <jar destfile="build/metadatabench.jar" manifest="MANIFEST.MF">
 	    	<fileset dir="bin/"/>
 		<fileset file="hazelcast-master.xml"/>
 		<fileset file="hazelcast-slave.xml"/>

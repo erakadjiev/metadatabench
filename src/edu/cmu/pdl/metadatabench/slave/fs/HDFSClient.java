@@ -11,10 +11,19 @@ import org.apache.hadoop.fs.FileContext;
 import org.apache.hadoop.fs.Path;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A client providing access to the underlying HDFS file system.
+ * 
+ * @author emil.rakadjiev
+ *
+ */
 public class HDFSClient implements IFileSystemClient {
 
 	private FileContext fileContext;
 	
+	/**
+	 * @param fileSystemAddress The address of the name node @see edu.cmu.pdl.metadatabench.common.Config#getFileSystemAddress()
+	 */
 	public HDFSClient(String fileSystemAddress){
 		try {
 			Configuration conf = new Configuration();
@@ -25,6 +34,9 @@ public class HDFSClient implements IFileSystemClient {
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int create(String path) throws IOException{
 		long startTime = System.currentTimeMillis();
@@ -33,6 +45,9 @@ public class HDFSClient implements IFileSystemClient {
 		return (int)(System.currentTimeMillis()-startTime);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int delete(String path) throws IOException{
 		long startTime = System.currentTimeMillis();
@@ -40,6 +55,9 @@ public class HDFSClient implements IFileSystemClient {
 		return (int)(System.currentTimeMillis()-startTime);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int listStatus(String path) throws IOException{
 		long startTime = System.currentTimeMillis();
@@ -47,6 +65,9 @@ public class HDFSClient implements IFileSystemClient {
 		return (int)(System.currentTimeMillis()-startTime);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int mkdir(String path) throws IOException{
 		long startTime = System.currentTimeMillis();
@@ -54,6 +75,9 @@ public class HDFSClient implements IFileSystemClient {
 		return (int)(System.currentTimeMillis()-startTime);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int open(String path) throws IOException{
 		long startTime = System.currentTimeMillis();
@@ -62,6 +86,9 @@ public class HDFSClient implements IFileSystemClient {
 	    return (int)(System.currentTimeMillis()-startTime);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int rename(String fromPath, String toPath) throws IOException{
 		long startTime = System.currentTimeMillis();
@@ -69,6 +96,9 @@ public class HDFSClient implements IFileSystemClient {
 		return (int)(System.currentTimeMillis()-startTime);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int move(String fromPath, String toPath) throws IOException {
 		// HDFS has no explicit move operation

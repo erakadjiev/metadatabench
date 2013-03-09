@@ -10,24 +10,55 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.Member;
 
+/**
+ * Provides methods for administration (e.g. start, stop, join, etc) of a Hazelcast cluster.
+ * 
+ * 
+ * @author emil.rakadjiev
+ *
+ */
 public class HazelcastCluster implements ICluster {
 
+	/** Singleton */
 	private static final HazelcastCluster instance = new HazelcastCluster();
+	/**
+	 * Reference to the Hazelcast cluster instance.
+	 * Theoretically there could be multiple Hazelcast instances in a JVM, but we ignore this use-case here.
+	 */
 	private static HazelcastInstance hazelcast;
+	/**
+	 * Reference to the master.
+	 * If there are multiple masters, this is the leader, for example the one that collects and aggregates 
+	 * measurements from all slaves.
+	 */
 	private static Member master;
+	/** Set of all slaves */
 	private static Set<Member> slaves;
 	
 	private HazelcastCluster() {}
-
+	
+	/**
+	 * Gets the singleton cluster object
+	 * 
+	 * @return The cluster object
+	 */
 	public static HazelcastCluster getInstance() {
 		return instance;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void start() {
 		// No need to explicitly start a Hazelcast cluser
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * The master is a lite member (it does not store data).
+	 */
 	@Override
 	public void joinAsMaster() {
 		System.setProperty("hazelcast.lite.member", "true");
@@ -35,6 +66,9 @@ public class HazelcastCluster implements ICluster {
 		hazelcast = Hazelcast.newHazelcastInstance(config);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void joinAsSlave() {
 		System.clearProperty("hazelcast.lite.member");
@@ -42,6 +76,12 @@ public class HazelcastCluster implements ICluster {
 		hazelcast = Hazelcast.newHazelcastInstance(config);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * This does not guarantee that the cluster will be stopped. Sometimes only manually killing 
+	 * the respective Java process helps.
+	 */
 	@Override
 	public void stop() {
 		if(hazelcast != null){
@@ -51,18 +91,30 @@ public class HazelcastCluster implements ICluster {
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int generateMasterId() {
 		AtomicNumber id = hazelcast.getAtomicNumber("id");
 		return getNextId(id);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int generateSlaveId() {
 		AtomicNumber id = hazelcast.getAtomicNumber("slaveid");
 		return getNextId(id);
 	}
 	
+	/**
+	 * Gets the next available id using a distributed atomic number.
+	 * 
+	 * @param id The atomic number to use for id generation
+	 * @return The id
+	 */
 	private int getNextId(AtomicNumber id){
 		int i = 0;
 		int j = 1;
@@ -72,6 +124,11 @@ public class HazelcastCluster implements ICluster {
 		return i;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Returns true if at least the given number of master and slaves have already joined the cluster.
+	 */
 	@Override
 	public boolean allMembersJoined(int masters, int slaves) {
 		Set<Member> members = hazelcast.getCluster().getMembers();
@@ -84,13 +141,25 @@ public class HazelcastCluster implements ICluster {
 				slaveCount++;
 			}
 		}
-		return (masterCount == masters) && (slaveCount == slaves);
+		return (masterCount >= masters) && (slaveCount >= slaves);
 	}
 	
+	/**
+	 * Gets the reference to the Hazelcast instance
+	 * 
+	 * @return The reference to the Hazelcast instance
+	 */
 	public HazelcastInstance getHazelcast(){
 		return hazelcast;
 	}
 	
+	/**
+	 * Gets the master member.
+	 * If there are multiple masters, this is the leader, e.g. the one that collects and aggregates 
+	 * measurements from all slaves.
+	 * 
+	 * @return The master member
+	 */
 	public Member getMaster(){
 		if(master == null){
 			Set<Member> members = hazelcast.getCluster().getMembers();
@@ -103,6 +172,11 @@ public class HazelcastCluster implements ICluster {
 		return master;
 	}
 	
+	/**
+	 * Gets the set of slave members.
+	 * 
+	 * @return The set of slave members.
+	 */
 	public Set<Member> getSlaves(){
 		if(slaves == null){
 			slaves = new HashSet<Member>();

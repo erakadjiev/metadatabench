@@ -1,5 +1,11 @@
 package edu.cmu.pdl.metadatabench.common;
 
+/**
+ * Types of file system metadata operations.
+ * 
+ * @author emil.rakadjiev
+ *
+ */
 public enum FileSystemOperationType {
 	CREATE ("create"),
 	MKDIRS ("mkdirs"),
@@ -16,6 +22,10 @@ public enum FileSystemOperationType {
 		this.name = name;
 	}
 	
+	/**
+	 * Gets the name of the operation
+	 * @return The name of the operation
+	 */
 	public String getName(){
 		return name;
 	}

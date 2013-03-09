@@ -11,6 +11,13 @@ import edu.cmu.pdl.metadatabench.measurement.Measurements;
 import edu.cmu.pdl.metadatabench.slave.fs.IFileSystemClient;
 import edu.cmu.pdl.metadatabench.slave.progress.Progress;
 
+/**
+ * Executes operations on the underlying file system and reports latencies, exceptions and progress.
+ * Each operation is wrapped into a runnable and submitted to a thread pool for execution.
+ * 
+ * @author emil.rakadjiev
+ *
+ */
 public class OperationExecutor {
 
 	private static final String CREATE_NAME = FileSystemOperationType.CREATE.getName();
@@ -28,6 +35,10 @@ public class OperationExecutor {
 	
 	private Logger log;
 	
+	/**
+	 * @param client The file system client used to access the underlying file system
+	 * @param threadCount The size of the thread pool
+	 */
 	public OperationExecutor(IFileSystemClient client, int threadCount){
 		this.client = client;
 		this.threadPool = Executors.newFixedThreadPool(threadCount);
@@ -35,6 +46,11 @@ public class OperationExecutor {
 		this.log = LoggerFactory.getLogger(OperationExecutor.class);
 	}
 	
+	/**
+	 * Submits a create operation to the thread pool for execution.
+	 * Includes reporting of latencies, exceptions and progress.
+	 * @param path The path of the file to create
+	 */
 	public void create(final String path){
 		Runnable op = new Runnable(){
 			@Override
@@ -56,6 +72,11 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
+	/**
+	 * Submits a delete operation to the thread pool for execution.
+	 * Includes reporting of latencies, exceptions and progress.
+	 * @param path The path of the file to delete
+	 */
 	public void delete(final String path){
 		Runnable op = new Runnable(){
 			@Override
@@ -74,6 +95,11 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
+	/**
+	 * Submits an ls file operation to the thread pool for execution.
+	 * Includes reporting of latencies, exceptions and progress.
+	 * @param path The path of the file
+	 */
 	public void listStatusFile(final String path){
 		Runnable op = new Runnable(){
 			@Override
@@ -92,6 +118,11 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
+	/**
+	 * Submits an ls dir operation to the thread pool for execution.
+	 * Includes reporting of latencies, exceptions and progress.
+	 * @param path The path of the directory
+	 */
 	public void listStatusDir(final String path){
 		Runnable op = new Runnable(){
 			@Override
@@ -110,6 +141,11 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
+	/**
+	 * Submits a mkdir operation to the thread pool for execution.
+	 * Includes reporting of latencies, exceptions and progress.
+	 * @param path The path of the directory to create
+	 */
 	public void mkdir(final String path){
 		Runnable op = new Runnable(){
 			@Override
@@ -128,6 +164,11 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
+	/**
+	 * Submits an open operation to the thread pool for execution.
+	 * Includes reporting of latencies, exceptions and progress.
+	 * @param path The path of the file to open
+	 */
 	public void open(final String path){
 		Runnable op = new Runnable(){
 			@Override
@@ -146,6 +187,11 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
+	/**
+	 * Submits a rename operation to the thread pool for execution.
+	 * Includes reporting of latencies, exceptions and progress.
+	 * @param path The path of the file to rename
+	 */
 	public void rename(final String fromPath, final String toPath){
 		Runnable op = new Runnable(){
 			@Override
@@ -164,6 +210,11 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
+	/**
+	 * Submits a move operation to the thread pool for execution.
+	 * Includes reporting of latencies, exceptions and progress.
+	 * @param path The path of the file to move
+	 */
 	public void move(final String fromPath, final String toPath){
 		Runnable op = new Runnable(){
 			@Override
@@ -182,6 +233,9 @@ public class OperationExecutor {
 		threadPool.submit(op);
 	}
 	
+	/**
+	 * Shuts down the thread pool.
+	 */
 	public void shutdown(){
 		threadPool.shutdown();
 	}

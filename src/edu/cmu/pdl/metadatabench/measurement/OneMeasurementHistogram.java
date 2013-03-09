@@ -34,7 +34,11 @@ import edu.cmu.pdl.metadatabench.common.Config;
  * Take measurements and maintain a histogram of a given metric, such as READ
  * LATENCY.
  * 
+ * Changes to original YCSB class: added support recording of exceptions, added support for adding 
+ * measurement data from another measurement, added cloning of measurement object. 
+ * 
  * @author cooperb
+ * @author emil.rakadjiev
  * 
  */
 @SuppressWarnings("serial")
@@ -144,10 +148,10 @@ public class OneMeasurementHistogram extends OneMeasurement {
 			exporter.write(getName(), exception, exceptions.get(exception));
 		}
 		
-//		for (int i = 0; i < _buckets; i++) {
-//			exporter.write(getName(), Integer.toString(i), histogram[i]);
-//		}
-//		exporter.write(getName(), ">" + _buckets, histogramoverflow);
+		for (int i = 0; i < _buckets; i++) {
+			exporter.write(getName(), Integer.toString(i), histogram[i]);
+		}
+		exporter.write(getName(), ">" + _buckets, histogramoverflow);
 	}
 
 	@Override
@@ -174,6 +178,9 @@ public class OneMeasurementHistogram extends OneMeasurement {
 		return "[" + getName() + " AverageLatency(ms)=" + d.format(report) + "]";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addMeasurement(OneMeasurement measurement) {
 		OneMeasurementHistogram measurementHistogram = (OneMeasurementHistogram) measurement;
@@ -198,6 +205,12 @@ public class OneMeasurementHistogram extends OneMeasurement {
 		
 	}
 
+	/**
+	 * Merges two histogram arrays
+	 * 
+	 * @param histogram The original histogram array that will be kept
+	 * @param histogramNew The new histogram array whose data will be merged into the original array
+	 */
 	private void combineHistogramArrays(int[] histogram, int[] histogramNew){
 		int length = histogram.length;
 		if(length != histogramNew.length){
@@ -209,6 +222,10 @@ public class OneMeasurementHistogram extends OneMeasurement {
 		}
 	}
 	
+	/**
+	 * Deep-clones this measurement
+	 * @return the cloned measurement
+	 */
 	public OneMeasurementHistogram clone() throws CloneNotSupportedException {
 		OneMeasurementHistogram clone = (OneMeasurementHistogram) super.clone();
 		clone.histogram = histogram.clone();

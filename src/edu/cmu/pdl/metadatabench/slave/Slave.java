@@ -9,36 +9,66 @@ import edu.cmu.pdl.metadatabench.cluster.communication.HazelcastDispatcher;
 import edu.cmu.pdl.metadatabench.common.Config;
 import edu.cmu.pdl.metadatabench.measurement.Measurements;
 import edu.cmu.pdl.metadatabench.measurement.OneMeasurementHistogram;
+import edu.cmu.pdl.metadatabench.measurement.OneMeasurementTimeSeries;
 import edu.cmu.pdl.metadatabench.slave.fs.HDFSClient;
 import edu.cmu.pdl.metadatabench.slave.progress.ProgressReporter;
 
+/**
+ * A slave receives operations from the master, executes them on the file system and measures the performance. It 
+ * also reports its progress and the measurements to the master.
+ * 
+ * This class sets up the components of the slave node (the operation handler, the operation executor, 
+ * the measurements and the progress reporter).
+ * 
+ * @author emil.rakadjiev
+ *
+ */
 public class Slave{
 
-	private static final int THREADS = Config.getSlaveThreadPoolSize();
-	private static final long REPORT_FREQUENCY = Config.getSlaveProgressReportFrequencyMillis();
-	private static final String MEASUREMENT_WARM_UP_TIME = String.valueOf(Config.getMeasurementWarmUpTime());
 	private static OperationExecutor executor;
 	private static OperationHandler handler;
 	
+	/**
+	 * Sets up the components of the slave node (the operation handler, the operation executor, 
+	 * the measurements and the progress reporter).
+	 * @param hazelcast The Hazelcast instance
+	 * @param id The id of this node
+	 * @param fileSystemAddress The address of the file system @see edu.cmu.pdl.metadatabench.common.Config#getFileSystemAddress()
+	 */
 	public static void start(HazelcastInstance hazelcast, int id, String fileSystemAddress) {
 		Properties props = new Properties();
-		props.setProperty(Measurements.MEASUREMENT_TYPE, "histogram");
-		props.setProperty(Measurements.MEASUREMENT_WARM_UP, MEASUREMENT_WARM_UP_TIME);
-		props.setProperty(OneMeasurementHistogram.BUCKETS, String.valueOf(Config.getMeasurementHistogramBuckets()));
-//		props.setProperty(OneMeasurementTimeSeries.GRANULARITY, String.valueOf(Config.getMeasurementTimeSeriesGranularity()));
+		String warmUp = String.valueOf(Config.getMeasurementWarmUpTime());
+		props.setProperty(Measurements.MEASUREMENT_WARM_UP, warmUp);
+		if(Config.isMeasurementHistogram()){
+			props.setProperty(Measurements.MEASUREMENT_TYPE, Measurements.MEASUREMENT_TYPE_HISTOGRAM);
+			props.setProperty(OneMeasurementHistogram.BUCKETS, String.valueOf(Config.getMeasurementHistogramBuckets()));
+		} else {
+			props.setProperty(Measurements.MEASUREMENT_TYPE, Measurements.MEASUREMENT_TYPE_TIMESERIES);
+			props.setProperty(OneMeasurementTimeSeries.GRANULARITY, String.valueOf(Config.getMeasurementTimeSeriesGranularity()));
+		}
 		props.setProperty("nodeId", Integer.toString(id));
 		Measurements.setProperties(props);
 		
-		executor = new OperationExecutor(new HDFSClient(fileSystemAddress), THREADS);
+		int threads = Config.getSlaveThreadPoolSize();
+		executor = new OperationExecutor(new HDFSClient(fileSystemAddress), threads);
+//		executor = new OperationExecutor(new DummyClient(), threads);
 		handler = new OperationHandler(executor, new HazelcastMapDAO(hazelcast));
 		
-		new Thread(new ProgressReporter(id, new HazelcastDispatcher(hazelcast), REPORT_FREQUENCY)).start();
+		long reportFrequency = Config.getSlaveProgressReportFrequencyMillis();
+		new Thread(new ProgressReporter(id, new HazelcastDispatcher(hazelcast), reportFrequency)).start();
 	}
 	
+	/**
+	 * Gets the operation handler
+	 * @return The operation handler
+	 */
 	public static OperationHandler getOperationHandler(){
 		return handler;
 	}
 	
+	/**
+	 * Shut down this node's components
+	 */
 	public static void shutdown(){
 		ProgressReporter.stop();
 		executor.shutdown();

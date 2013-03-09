@@ -26,6 +26,9 @@ import com.yahoo.ycsb.measurements.exporter.MeasurementsExporter;
 
 /**
  * A single measured metric (such as READ LATENCY)
+ * 
+ * Changes to original YCSB class: added support recording of exceptions, added support for adding 
+ * measurement data from another measurement, added cloning of underlying data structures. 
  */
 @SuppressWarnings("serial")
 public abstract class OneMeasurement implements Serializable, Cloneable {
@@ -48,6 +51,11 @@ public abstract class OneMeasurement implements Serializable, Cloneable {
 
 	public abstract void reportReturnCode(int code);
 
+	/**
+	 * Reports a failed operation
+	 * 
+	 * @param exceptionType The name of the exception that has occured
+	 */
 	public synchronized void reportException(String exceptionType) {
 		Integer count = exceptions.get(exceptionType);
 		if(count == null){
@@ -72,12 +80,26 @@ public abstract class OneMeasurement implements Serializable, Cloneable {
 	 */
 	public abstract void exportMeasurements(MeasurementsExporter exporter) throws IOException;
 	
+	/**
+	 * Add data from another measurement (combines the data in this measurement object)
+	 * @param measurement The measurement to merge into this measurement 
+	 */
 	public abstract void addMeasurement(OneMeasurement measurement);
 	
+	/**
+	 * Clones this measurement
+	 * @return the cloned measurement
+	 */
 	public OneMeasurement clone() throws CloneNotSupportedException {
 		return (OneMeasurement) super.clone();
 	}
 	
+	/**
+	 * Merges two return code maps
+	 * 
+	 * @param returncodes The original return codes map that will be kept
+	 * @param returncodesNew The new return codes map whose data will be merged into the original map
+	 */
 	protected void combineReturnCodeMaps(HashMap<Integer, int[]> returncodes, HashMap<Integer, int[]> returncodesNew) {
 		Set<Integer> codes = returncodesNew.keySet();
 		for(Integer code : codes){
@@ -90,6 +112,12 @@ public abstract class OneMeasurement implements Serializable, Cloneable {
 		}
 	}
 	
+	/**
+	 * Merges two excpetion maps
+	 * 
+	 * @param exceptions The original exceptions map that will be kept
+	 * @param exceptionsNew The new exceptions map whose data will be merged into the original map
+	 */
 	protected void combineExceptionMaps(HashMap<String, Integer> exceptions, HashMap<String, Integer> exceptionsNew) {
 		Set<String> keys = exceptionsNew.keySet();
 		for(String key : keys){
@@ -102,6 +130,12 @@ public abstract class OneMeasurement implements Serializable, Cloneable {
 		}
 	}
 	
+	/**
+	 * Deep-clones a return code map
+	 * 
+	 * @param returncodes The return codes map to clone
+	 * @return The clone of the return codes map
+	 */
 	protected HashMap<Integer, int[]> cloneReturnCodeMap(HashMap<Integer, int[]> returncodes){
 		HashMap<Integer, int[]> clone = new HashMap<Integer, int[]>();
 		Set<Integer> keySet = returncodes.keySet();
@@ -112,6 +146,12 @@ public abstract class OneMeasurement implements Serializable, Cloneable {
 		return clone;
 	}
 	
+	/**
+	 * Deep-clones an exceptions map
+	 * 
+	 * @param exceptions The exceptions map to clone
+	 * @return The clone of the exceptions map
+	 */
 	protected HashMap<String, Integer> cloneExceptionMap(HashMap<String, Integer> exceptions){
 		HashMap<String, Integer> clone = new HashMap<String, Integer>();
 		Set<String> keySet = exceptions.keySet();
