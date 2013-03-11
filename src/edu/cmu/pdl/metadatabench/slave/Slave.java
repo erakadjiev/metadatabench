@@ -46,7 +46,7 @@ public class Slave{
 			props.setProperty(Measurements.MEASUREMENT_TYPE, Measurements.MEASUREMENT_TYPE_TIMESERIES);
 			props.setProperty(OneMeasurementTimeSeries.GRANULARITY, String.valueOf(Config.getMeasurementTimeSeriesGranularity()));
 		}
-		props.setProperty("nodeId", Integer.toString(id));
+		props.setProperty(Measurements.NODE_ID, Integer.toString(id));
 		Measurements.setProperties(props);
 		
 		int threads = Config.getSlaveThreadPoolSize();

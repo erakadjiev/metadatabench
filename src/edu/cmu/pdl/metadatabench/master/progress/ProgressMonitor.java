@@ -48,12 +48,37 @@ public class ProgressMonitor {
 	 * @param operationsDone The number of operations executed by the node
 	 */
 	public static synchronized void reportCompletedOperations(int nodeId, long operationsDone){
-		operationsDonePerNode.put(nodeId, operationsDone);
-		int opsSum = sumOfOperations();
-		operationsDoneTotal = opsSum;
-		log.info("{} operations done", opsSum);
-		if(opsSum == operationsNeeded){
-			latch.countDown();
+		if(addOperations(nodeId, operationsDone)){
+			int opsSum = sumOfOperations();
+			operationsDoneTotal = opsSum;
+			log.info("{} operations done", opsSum);
+			if(opsSum == operationsNeeded){
+				latch.countDown();
+			}
+		} else {
+			log.debug("Received old progress report from node {}, ignoring it.", nodeId);
+		}
+	}
+	
+	/**
+	 * Records how many operations a node has done and reported.
+	 * If the progress report is old, it is ignored.
+	 * 
+	 * @param nodeId The id of the node which sends the report
+	 * @param operationsDone The number of operations executed by the node
+	 * @return True if the reported operations were recorded, false if the progress report was old and was thus ignored
+	 */
+	private static boolean addOperations(int nodeId, long operationsDone){
+		Long opsOld = operationsDonePerNode.get(nodeId);
+		/*
+		 * Due to the asynchronous communication, an older progress report may be received after a newer one. 
+		 * In this case, the newer value must not be overwritten.
+		 */
+		if((opsOld == null) || (operationsDone > opsOld)){
+			operationsDonePerNode.put(nodeId, operationsDone);
+			return true;
+		} else {
+			return false;
 		}
 	}
 	

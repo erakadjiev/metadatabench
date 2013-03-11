@@ -48,6 +48,7 @@ public class Measurements{
 	/** @see edu.cmu.pdl.metadatabench.common.Config#getMeasurementWarmUpTime() */
 	public static final String MEASUREMENT_WARM_UP = "measurementwarmup";
 	private static final String MEASUREMENT_WARM_UP_TIME_DEFAULT = String.valueOf(Config.getMeasurementWarmUpTime());
+	public static final String NODE_ID = "nodeid";
 
 	static Measurements singleton = null;
 	static Properties measurementproperties = null;
@@ -209,7 +210,7 @@ public class Measurements{
 	 */
 	public MeasurementDataForNode getMeasurementDataForNode(){
 		int nodeId = 0;
-		String prop = _props.getProperty("nodeId");
+		String prop = _props.getProperty(NODE_ID);
 		if(prop != null){
 			nodeId = Integer.parseInt(prop);
 		}

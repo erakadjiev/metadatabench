@@ -18,6 +18,16 @@
 <hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-2.5.xsd"
            xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<group>
+		<!--
+		This is the name of the cluster. If you want to run multiple independent master nodes in parallel, 
+		you will need to have different jar files for each master and in each jar this property must be 
+		unique. This way, each master will have its own cluster. You can start multiple slave nodes (each 
+		connecting to a different cluster) on a machine and this way share the slave machines between masters.
+		-->
+		<name>metadatabench</name>
+		<password></password>
+	</group>
     <management-center enabled="false">http://localhost:8080/mancenter</management-center>
     <network>
         <port auto-increment="true">5701</port>

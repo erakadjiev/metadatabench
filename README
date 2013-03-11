@@ -31,8 +31,9 @@ Measurements are done using modified versions of the YCSB++
 (http://www.pdl.cmu.edu/ycsb++/index.shtml) measurement classes.
 
 Currently, the application has one master node that generates operations and 
-dispatches them for execution to an arbitrary number of slave nodes. In the 
-future, multiple, parallel master nodes should be supported.
+dispatches them for execution to an arbitrary number of slave nodes. However, 
+you can start multiple, independent master nodes that can work in parallel on 
+different work/root directories. See "Usage" for details.
 
 Logging is done using SLF4J and Logback. By default, logs are exported to 
 standard out and to a file.
@@ -70,6 +71,21 @@ Hazelcast. Those can be customized by changing the included
 hazelcast-master.xml and hazelcast-slave.xml files. Logging configuration is 
 located in logback.xml. You have to rebuild the jar file for those to take 
 effect.
+
+As mentioned in the "Overview", you can have multiple master nodes that work 
+on independent parts of the namespace (in different work directories) in 
+parallel. For this, you will need slightly different jar files and different 
+configuration properties files for each master. One of the jar files can be 
+the default one that you would use in the single master case. In the other 
+jars, you will have to change the group name property in both of the Hazelcast 
+xml files (hazelcast-master.xml and hazelcast-slave.xml). This property 
+denotes the name of the cluster that a node connects to and it has to be unique 
+for each master. Similarly, for each master you will need a configuration 
+properties file, where the master.namespace.workdir property is unique. This 
+way, each master will have its own cluster and work directory and there won't 
+be conflicts between them. You can start multiple slave nodes (each connecting 
+to a different cluster) on one machine and this way the slave machines can be 
+shared between masters.
 
 If you need to change generation strategies, file system clients or any other 
 piece of the source code, you can import the source for example into Eclipse. 
