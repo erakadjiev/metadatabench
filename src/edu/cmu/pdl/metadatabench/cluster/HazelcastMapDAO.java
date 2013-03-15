@@ -38,12 +38,10 @@ public class HazelcastMapDAO implements INamespaceMapDAO {
 	
 	/**
 	 * {@inheritDoc}
-	 * 
-	 * This method works asynchronously.
 	 */
 	@Override
 	public void createDir(long id, String path) {
-		dirMap.putAsync(id, path);
+		dirMap.put(id, path);
 	}
 
 	/**
@@ -56,12 +54,10 @@ public class HazelcastMapDAO implements INamespaceMapDAO {
 	
 	/**
 	 * {@inheritDoc}
-	 * 
-	 * This method works asynchronously
 	 */
 	@Override
 	public void deleteDir(long id) {
-		dirMap.removeAsync(id);
+		dirMap.remove(id);
 	}
 
 	/**
@@ -74,12 +70,10 @@ public class HazelcastMapDAO implements INamespaceMapDAO {
 
 	/**
 	 * {@inheritDoc}
-	 * 
-	 * This method works asynchronously
 	 */
 	@Override
 	public void createFile(long id, String path) {
-		fileMap.putAsync(id, path);
+		fileMap.put(id, path);
 	}
 
 	/**
@@ -92,12 +86,10 @@ public class HazelcastMapDAO implements INamespaceMapDAO {
 
 	/**
 	 * {@inheritDoc}
-	 * 
-	 * This method works asynchronously
 	 */
 	@Override
 	public void deleteFile(long id) {
-		fileMap.removeAsync(id);
+		fileMap.remove(id);
 	}
 	
 	/**

@@ -48,6 +48,13 @@ java -jar metadatabench.jar -master, and a slave node by
 java -jar metadatabench.jar -slave. This assumes that you have provided a 
 configuration properties file in the same folder as the jar. See details below.
 
+Don't forget to set the maximum heap size for the JVM using the -Xmx 
+command-line option. This is important mainly for the slaves, because they 
+store the namespace map in memory. According to measurements, an entry in the 
+map occupies 350-650 bytes, depending on the length of the path name (these 
+values are for a namespace containing 100 million directories and 100 million 
+files).
+
 The jar file contains the compiled source code and the Hazelcast and Logback 
 configuration XML files. In the same folder where the jar file is located, 
 there must be a lib folder containing all libraries that the benchmark depends 

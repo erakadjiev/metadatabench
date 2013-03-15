@@ -24,6 +24,8 @@ USAGE:
 
 You can start a master (generator) node on a machine by calling `java -jar metadatabench.jar -master`, and a slave node by `java -jar metadatabench.jar -slave`. This assumes that you have provided a configuration properties file in the same folder as the jar. See details below.
 
+Don't forget to set the maximum heap size for the JVM using the -Xmx command-line option. This is important mainly for the slaves, because they store the namespace map in memory. According to measurements, an entry in the map occupies 350-650 bytes, depending on the length of the path name (these values are for a namespace containing 100 million directories and 100 million files).
+
 The jar file contains the compiled source code and the Hazelcast and Logback configuration XML files. In the same folder where the jar file is located, there must be a lib folder containing all libraries that the benchmark depends on (all of them are provided in the benchmark's repository), and an optional configuration properties file. Dependencies are currently managed manually, in the future e.g. Maven may be used.
 
 The configuration properties file is called by default *metadatabench.properties* and should be located in the same folder as the jar, though you can specify a custom path or omit the file by providing the required parameters on the command line and using pre-configured defaults for the rest of the parameters (though this is not recommended).
