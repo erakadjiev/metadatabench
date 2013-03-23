@@ -136,28 +136,34 @@ public class ConfigLoader {
 	public static void loadConfig(String configPath){
 		Properties config = new Properties();
 		
+		InputStream configIS = null;
 		try {
-			InputStream configIS = new FileInputStream(configPath);
+			configIS = new FileInputStream(configPath);
 			config.load(configIS);
+			applyConfig(config);
 		} catch (FileNotFoundException e) {
-			InputStream configIS = ConfigLoader.class.getClassLoader().getResourceAsStream(configPath);
+			configIS = ConfigLoader.class.getClassLoader().getResourceAsStream(configPath);
 			if(configIS == null){
 				log.warn("Config properties file not found, using default settings");
-				return;
 			} else {
 				try {
 					config.load(configIS);
 				} catch (IOException e1) {
 					log.warn("Cannot load config properties file, using default settings");
-					return;
 				}
 			}
 		} catch (IOException e) {
 			log.warn("Cannot load config properties file, using default settings");
-			return;
+		} finally {
+			if(configIS != null){
+				try {
+					configIS.close();
+				} catch (IOException e) {
+					log.debug("Cannot close input stream to parameters file", e);
+				}
+			}
 		}
 		
-		applyConfig(config);
 	}
 
 	/**
@@ -465,7 +471,9 @@ public class ConfigLoader {
 			}
 		}
 		
-		if(getOperationProbabilitesSum(workloadOperationProbabilities) == 1){
+		// Avoid floating point precision problems
+		double opSum = Math.floor(getOperationProbabilitesSum(workloadOperationProbabilities) * 100 + 0.5) / 100;
+		if(opSum == 1){
 			Config.setWorkloadOperationProbabilities(workloadOperationProbabilities);
 		} else {
 			log.warn("Supplied workload operation probabilities do not add up to 1. Using default operation probabilites.");
