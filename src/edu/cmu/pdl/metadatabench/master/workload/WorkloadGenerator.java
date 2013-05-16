@@ -77,6 +77,9 @@ public class WorkloadGenerator {
 	/** 
 	 * Caches the accessed elements' ids for a given time, in order to prevent further access to them that 
 	 * could cause conflicts.
+	 * 
+	 * TODO: create separate caches for read accessed elements and modified elements, in order to be able to 
+	 * read elements that have only been read and not modified previously (like read-write lock)  
 	 */
 	private IdCache accessedElementIdCache;
 	

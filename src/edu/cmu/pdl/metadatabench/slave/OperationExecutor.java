@@ -234,6 +234,13 @@ public class OperationExecutor {
 	}
 	
 	/**
+	 * @return The client used to access the file system
+	 */
+	public IFileSystemClient getFileSystemClient(){
+		return client;
+	}
+	
+	/**
 	 * Shuts down the thread pool.
 	 */
 	public void shutdown(){

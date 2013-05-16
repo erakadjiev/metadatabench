@@ -85,6 +85,7 @@ public class HazelcastCluster implements ICluster {
 	@Override
 	public void stop() {
 		if(hazelcast != null){
+			hazelcast.getLifecycleService().shutdown();
 			hazelcast.getLifecycleService().kill();
 		} else {
 			Hazelcast.shutdownAll();
@@ -110,6 +111,24 @@ public class HazelcastCluster implements ICluster {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void masterJoined() {
+		AtomicNumber masters = hazelcast.getAtomicNumber("masters");
+		masters.incrementAndGet();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void slaveJoined() {
+		AtomicNumber slaves = hazelcast.getAtomicNumber("slaves");
+		slaves.incrementAndGet();
+	}
+	
+	/**
 	 * Gets the next available id using a distributed atomic number.
 	 * 
 	 * @param id The atomic number to use for id generation
@@ -132,16 +151,21 @@ public class HazelcastCluster implements ICluster {
 	@Override
 	public boolean allMembersJoined(int masters, int slaves) {
 		Set<Member> members = hazelcast.getCluster().getMembers();
-		int masterCount = 0;
-		int slaveCount = 0;
+		boolean noSlavesJoined = true;
 		for(Member member : members){
-			if(member.isLiteMember()){
-				masterCount++;
-			} else {
-				slaveCount++;
+			if(!member.isLiteMember()){
+				noSlavesJoined = false;
 			}
 		}
-		return (masterCount >= masters) && (slaveCount >= slaves);
+		
+		if(!noSlavesJoined){
+			int masterCount = (int)hazelcast.getAtomicNumber("masters").get();
+			int slaveCount = (int)hazelcast.getAtomicNumber("slaves").get();
+			
+			return (masterCount >= masters) && (slaveCount >= slaves);
+		} else {
+			return false;
+		}
 	}
 	
 	/**

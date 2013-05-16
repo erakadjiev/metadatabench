@@ -33,6 +33,8 @@ public class Config {
 	private static String fileNamePrefix = "file";
 	/** @see edu.cmu.pdl.metadatabench.common.Config#getWorkloadRenameSuffix() */
 	private static String workloadRenameSuffix = ".r";
+	/** @see edu.cmu.pdl.metadatabench.common.Config#getDeleteNamespace() */
+	private static boolean deleteNamespace = false;
 	
 	/** @see edu.cmu.pdl.metadatabench.common.Config#getWorkloadOperationProbabilities() */
 	private static Map<FileSystemOperationType,Double> workloadOperationProbabilities = new HashMap<FileSystemOperationType,Double>();
@@ -182,6 +184,18 @@ public class Config {
 		Config.workloadRenameSuffix = workloadRenameSuffix;
 	}
 
+	/** 
+	 * If true, the generated namespace will be deleted after the benchmark has finished executing all operations.
+	 */
+	public static boolean getDeleteNamespace() {
+		return deleteNamespace;
+	}
+
+	/** @see edu.cmu.pdl.metadatabench.common.Config#getDeleteNamespace() */
+	public static void setDeleteNamespace(boolean deleteNamespace) {
+		Config.deleteNamespace = deleteNamespace;
+	}
+	
 	/**
 	 * Map of operation types and their probability. An operation probability is the percentage of operations of the 
 	 * given type in the workload ({@link edu.cmu.pdl.metadatabench.common.Config#getNumberOfOps()}). The values 

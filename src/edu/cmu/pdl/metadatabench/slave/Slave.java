@@ -2,8 +2,12 @@ package edu.cmu.pdl.metadatabench.slave;
 
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hazelcast.core.HazelcastInstance;
 
+import edu.cmu.pdl.metadatabench.cluster.HazelcastCluster;
 import edu.cmu.pdl.metadatabench.cluster.HazelcastMapDAO;
 import edu.cmu.pdl.metadatabench.cluster.communication.HazelcastDispatcher;
 import edu.cmu.pdl.metadatabench.common.Config;
@@ -27,6 +31,8 @@ public class Slave{
 
 	private static OperationExecutor executor;
 	private static OperationHandler handler;
+	
+	private static Logger log = LoggerFactory.getLogger(Slave.class);
 	
 	/**
 	 * Sets up the components of the slave node (the operation handler, the operation executor, 
@@ -55,6 +61,7 @@ public class Slave{
 		handler = new OperationHandler(executor, new HazelcastMapDAO(hazelcast));
 		
 		long reportFrequency = Config.getSlaveProgressReportFrequencyMillis();
+		
 		new Thread(new ProgressReporter(id, new HazelcastDispatcher(hazelcast), reportFrequency)).start();
 	}
 	
@@ -67,11 +74,21 @@ public class Slave{
 	}
 	
 	/**
+	 * Gets the operation executor
+	 * @return The operation executor
+	 */
+	public static OperationExecutor getOperationExecutor(){
+		return executor;
+	}
+	
+	/**
 	 * Shut down this node's components
 	 */
 	public static void shutdown(){
+		log.info("Shutting down.");
 		ProgressReporter.stop();
 		executor.shutdown();
+		HazelcastCluster.getInstance().stop();
 	}
 
 }

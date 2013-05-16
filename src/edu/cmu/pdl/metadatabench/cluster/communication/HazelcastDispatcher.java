@@ -12,6 +12,7 @@ import com.hazelcast.core.MultiTask;
 import edu.cmu.pdl.metadatabench.cluster.HazelcastCluster;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.MeasurementsCollect;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.MeasurementsReset;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.NamespaceDelete;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressFinished;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressReport;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressReset;
@@ -91,6 +92,18 @@ public class HazelcastDispatcher implements IDispatcher {
 	@Override
 	public void dispatch(MeasurementsReset reset) {
 		executorService.execute(new DistributedTask<Boolean>(reset, true, getSlaves()));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * From master to one slave. Synchronous.
+	 */
+	@Override
+	public int dispatch(NamespaceDelete delete) throws Exception{
+		DistributedTask<Integer> task = new DistributedTask<Integer>(delete);
+		executorService.execute(task);
+		return task.get();
 	}
 
 	/**

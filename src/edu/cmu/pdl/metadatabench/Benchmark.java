@@ -161,7 +161,8 @@ public class Benchmark {
 				
 				log.info("Waiting for all members to join the cluster.");
 
-				while(!cluster.allMembersJoined(MASTERS, numberOfSlaves)){
+				// MASTERS-1, because the current node is also a master and it has not yet indicated that it has joined the cluster
+				while(!cluster.allMembersJoined(MASTERS-1, numberOfSlaves)){
 					try {
 						log.debug("Going to sleep for {} ms while waiting for all memebers to join the cluster.", SLEEP_TIME);
 						Thread.sleep(SLEEP_TIME);
@@ -173,6 +174,7 @@ public class Benchmark {
 				log.info("All members joined the cluster. Starting the generation.");
 				
 				int id = cluster.generateMasterId();
+//				cluster.masterJoined();
 				Master.start(((HazelcastCluster)cluster).getHazelcast(), id, numberOfDirs, numberOfFiles, numberOfOperations);
 			} else if(cmdLine.hasOption(OPT_SLAVE)){
 				
@@ -192,6 +194,7 @@ public class Benchmark {
 				cluster.joinAsSlave();
 				int id = cluster.generateSlaveId();
 				Slave.start(((HazelcastCluster)cluster).getHazelcast(), id, fsAddress);
+				cluster.slaveJoined();
 			} else if(cmdLine.hasOption(OPT_STOP)){
 				cluster.stop();
 			} else if(cmdLine.hasOption(OPT_HELP)){

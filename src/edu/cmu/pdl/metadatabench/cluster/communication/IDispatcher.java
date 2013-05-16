@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.MeasurementsCollect;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.MeasurementsReset;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.NamespaceDelete;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressFinished;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressReport;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressReset;
@@ -52,6 +53,15 @@ public interface IDispatcher {
 	 * @param reset	The measurement reset command to dispatch
 	 */
 	public void dispatch(MeasurementsReset reset);
+	
+	/**
+	 * Dispatches a {@link NamespaceDelete}.
+	 * 
+	 * @param finish	The namespace deletion command to dispatch
+	 * @return The time needed to delete the namespace
+	 * @throws Exception If there is an error in the network connection or at the slave.
+	 */
+	public int dispatch(NamespaceDelete delete) throws Exception;
 	
 	/**
 	 * Collects measurements from the slaves.

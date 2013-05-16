@@ -41,6 +41,17 @@ public interface ICluster {
 	public int generateMasterId();
 	
 	/**
+	 * Indicates that a master has finished the join process. Used to determine the number of nodes already in the cluster.
+	 */
+	public void masterJoined();
+	
+	
+	/**
+	 * Indicates that a slave has finished the join process. Used to determine the number of nodes already in the cluster.
+	 */
+	public void slaveJoined();
+	
+	/**
 	 * Checks, whether all expected members have joined this cluster
 	 * 
 	 * @param masters Number of masters that have to join this cluster

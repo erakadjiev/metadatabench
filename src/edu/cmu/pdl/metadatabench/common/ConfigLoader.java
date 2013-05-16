@@ -45,6 +45,8 @@ public class ConfigLoader {
 	private static final String DIR_NAME_PREFIX = 							"master.namespace.dirnameprefix";
 	/** @see edu.cmu.pdl.metadatabench.common.Config#getFileNamePrefix() */
 	private static final String FILE_NAME_PREFIX = 							"master.namespace.filenameprefix";
+	/** @see edu.cmu.pdl.metadatabench.common.Config#getDeleteNamespace() */
+	private static final String DELETE_NAMESPACE = 							"master.namespace.delete";
 	/** @see edu.cmu.pdl.metadatabench.common.Config#getWorkloadRenameSuffix() */
 	private static final String WORKLOAD_RENAME_SUFFIX = 					"master.workload.renamesuffix";
 	/** @see edu.cmu.pdl.metadatabench.common.Config#getWorkloadAccessedElementCacheMaxSize() */
@@ -267,6 +269,12 @@ public class ConfigLoader {
 
 				log.debug("Set config parameter {} to {}", prop, value);
 				Config.setFileNamePrefix(value);
+				
+			} else if(DELETE_NAMESPACE.equalsIgnoreCase(prop)){
+				
+				boolean deleteNamespace = Boolean.parseBoolean(value);
+				log.debug("Set config parameter {} to {}", prop, value);
+				Config.setDeleteNamespace(deleteNamespace);
 				
 			} else if(WORKLOAD_RENAME_SUFFIX.equalsIgnoreCase(prop)){
 				

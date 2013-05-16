@@ -16,13 +16,17 @@ import org.slf4j.LoggerFactory;
 import com.hazelcast.core.HazelcastInstance;
 import com.yahoo.ycsb.measurements.exporter.TextMeasurementsExporter;
 
+import edu.cmu.pdl.metadatabench.cluster.HazelcastCluster;
 import edu.cmu.pdl.metadatabench.cluster.HazelcastMapDAO;
 import edu.cmu.pdl.metadatabench.cluster.INamespaceMapDAO;
 import edu.cmu.pdl.metadatabench.cluster.communication.HazelcastDispatcher;
 import edu.cmu.pdl.metadatabench.cluster.communication.IDispatcher;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.MeasurementsCollect;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.MeasurementsReset;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.NamespaceDelete;
+import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressFinished;
 import edu.cmu.pdl.metadatabench.cluster.communication.messages.ProgressReset;
+import edu.cmu.pdl.metadatabench.common.Config;
 import edu.cmu.pdl.metadatabench.master.namespace.AbstractDirectoryCreationStrategy;
 import edu.cmu.pdl.metadatabench.master.namespace.AbstractFileCreationStrategy;
 import edu.cmu.pdl.metadatabench.master.namespace.BarabasiAlbertDirectoryCreationStrategy;
@@ -175,6 +179,28 @@ public class Master {
 			// collect workload measurements from slaves and export them 
 			collectExportAndResetMeasurements(dispatcher, "workload", overallMeasurements);
 		}
+		
+		if(Config.getDeleteNamespace()){
+			// wait before starting the next phase
+			try {
+				log.debug("Going to sleep for {} seconds before deleting the namespace", SLEEP_AFTER_GENERATION_STEP_MILLIS);
+				Thread.sleep(SLEEP_AFTER_GENERATION_STEP_MILLIS);
+			} catch (InterruptedException e) {
+				log.warn("Thread was interrupted while sleeping", e);
+			}
+			int deleteTime = 0;
+			try {
+				deleteTime = dispatcher.dispatch(new NamespaceDelete(Config.getWorkDir()));
+			} catch (Exception e) {
+				log.error("Exception while deleting namespace", e);
+			}
+			log.info("Namespace deleted in {} ms", deleteTime);
+		}
+		
+		log.info("Shutting down.");
+		// Send shutdown messages to slaves
+		dispatcher.dispatch(new ProgressFinished());
+		HazelcastCluster.getInstance().stop();
 	}
 	
 	/**
